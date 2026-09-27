@@ -169,7 +169,7 @@ jobs:
           const polish=fs.readFileSync('studio-polish.js','utf8');
           if(!polish.includes('data-i18n')) throw new Error('Studio menu is not translation-key based');
           const m=JSON.parse(fs.readFileSync('manifest.json','utf8'));
-          if(!/^3\.0\.\d+$/.test(m.version)) throw new Error('Expected Plugin Studio 3.0.x');
+          if(!/^3\.\d+\.\d+$/.test(m.version)) throw new Error('Expected Plugin Studio 3.x');
           NODE
           node --check permission-assistant.js
           node --check studio-timeline.js
