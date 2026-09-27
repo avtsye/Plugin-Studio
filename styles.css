@@ -41,3 +41,6 @@ dialog{width:min(820px,94vw);padding:22px;background:var(--color-surface);box-sh
 /* Audit fixes: compact mode + narrow dialogs/builders */
 .compactMode header{height:50px;padding-inline:10px}.compactMode main{height:calc(100vh - 205px);grid-template-columns:200px minmax(0,1fr) 220px}.compactMode .bottom{height:155px}.compactMode aside{padding:7px}.compactMode .file{padding:.35em .5em}.compactMode button{padding:.42em .65em}.compactMode .tab{padding-inline:9px}.compactMode dialog{padding:14px}
 @media(max-width:760px){#vbTree,#vbProps,#vbPreview{min-width:0}.projectCard{align-items:flex-start;flex-direction:column}.projectActions{width:100%}.dialogToolbar{align-items:flex-start;flex-direction:column}.moreTools{left:8px;right:8px;width:auto}.buildStatus{align-items:flex-start;gap:6px;flex-direction:column}}
+
+.vbWorkspace{display:grid;grid-template-columns:180px minmax(0,1fr) 220px;gap:8px;min-height:280px}
+@media(max-width:760px){.vbWorkspace{grid-template-columns:1fr;max-height:62vh;overflow:auto}.vbWorkspace>#vbTree,.vbWorkspace>#vbProps{max-height:180px}}
