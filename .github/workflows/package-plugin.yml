@@ -124,6 +124,9 @@ jobs:
           node --check studio-shell.js
           node --check permission-assistant.js
           node --check studio-timeline.js
+          node --check otzaria-simulator.js
+          node --check workflow-builder.js
+          node --check test-recorder.js
 
       - name: Plugin Studio regression checks
         shell: bash
