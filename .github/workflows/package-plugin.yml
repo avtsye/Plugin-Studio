@@ -31,6 +31,29 @@ jobs:
       - name: Validate with official Otzaria validator
         uses: Otzaria/otzaria-plugin-validator@v1
 
+      - name: Vendor CodeMirror locally
+        shell: bash
+        run: |
+          set -e
+          mkdir -p vendor/codemirror
+          BASE="https://cdn.jsdelivr.net/npm/codemirror@5.65.20"
+          curl -fsSL "$BASE/lib/codemirror.js" -o vendor/codemirror/codemirror.js
+          curl -fsSL "$BASE/lib/codemirror.css" -o vendor/codemirror/codemirror.css
+          curl -fsSL "$BASE/mode/javascript/javascript.js" -o vendor/codemirror/javascript.js
+          curl -fsSL "$BASE/mode/xml/xml.js" -o vendor/codemirror/xml.js
+          curl -fsSL "$BASE/mode/css/css.js" -o vendor/codemirror/css.js
+          curl -fsSL "$BASE/mode/htmlmixed/htmlmixed.js" -o vendor/codemirror/htmlmixed.js
+          curl -fsSL "$BASE/addon/edit/matchbrackets.js" -o vendor/codemirror/matchbrackets.js
+          curl -fsSL "$BASE/addon/edit/closebrackets.js" -o vendor/codemirror/closebrackets.js
+          curl -fsSL "$BASE/addon/fold/foldcode.js" -o vendor/codemirror/foldcode.js
+          curl -fsSL "$BASE/addon/fold/foldgutter.js" -o vendor/codemirror/foldgutter.js
+          curl -fsSL "$BASE/addon/fold/foldgutter.css" -o vendor/codemirror/foldgutter.css
+          curl -fsSL "$BASE/addon/fold/brace-fold.js" -o vendor/codemirror/brace-fold.js
+          curl -fsSL "$BASE/addon/hint/show-hint.js" -o vendor/codemirror/show-hint.js
+          curl -fsSL "$BASE/addon/hint/show-hint.css" -o vendor/codemirror/show-hint.css
+          test -s vendor/codemirror/codemirror.js
+          test -s vendor/codemirror/codemirror.css
+
       - name: JavaScript syntax check
         shell: bash
         run: |
@@ -46,6 +69,8 @@ jobs:
           node --check release-wizard.js
           node --check studio-settings.js
           node --check crash-recovery.js
+          node --check editor-codemirror.js
+          node --check help.js
 
       - name: Plugin Studio regression checks
         shell: bash
