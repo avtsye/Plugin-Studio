@@ -31,6 +31,12 @@ jobs:
       - name: Validate with official Otzaria validator
         uses: Otzaria/otzaria-plugin-validator@v1
 
+      - name: JavaScript syntax check
+        shell: bash
+        run: |
+          node --check app.js
+          node --check sdk-spec.js
+
       - name: Plugin Studio regression checks
         shell: bash
         run: |
