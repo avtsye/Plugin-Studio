@@ -128,5 +128,9 @@ window.PluginStudioAPI={
   escapeHtml:esc,
   hostCall,
   sdk:S,
+  listProjects(){return Object.entries(db.projects).map(([id,p])=>({id,name:p.name,active:id===db.active}))},
+  renameProject(id,name){if(!db.projects[id]||!name?.trim())return false;db.projects[id].name=name.trim();if(id===db.active)st=db.projects[id];save();draw();return true},
+  deleteProject(id){if(!db.projects[id]||Object.keys(db.projects).length<=1)return false;delete db.projects[id];if(db.active===id){db.active=Object.keys(db.projects)[0];st=db.projects[db.active];cur=Object.keys(st.files)[0];open=[cur];file(cur)}save();return true},
+  switchProject(id){if(!db.projects[id])return false;db.active=id;st=db.projects[id];cur=Object.keys(st.files)[0];open=[cur];save();file(cur);return true},
   importFiles(files,name){let k=Date.now().toString(36);db.projects[k]={name:name||"Imported Plugin",files};db.active=k;st=db.projects[k];cur=files["manifest.json"]?"manifest.json":Object.keys(files)[0];open=[cur];save();file(cur);check();return k}
 };
