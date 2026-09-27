@@ -51,14 +51,14 @@ jobs:
               errors.append("Plugin Studio must remain offline")
           if any(str(p).startswith("network.") for p in manifest.get("permissions", [])):
               errors.append("Plugin Studio manifest contains a network permission")
-          for required in ["editor","projects","designer","preview","importInput","templates","quickOpen","problems"]:
+          for required in ["editor","projects","designer","preview","importInput","templates","quickOpen","problems","renameFile","deleteFile","projectSearch","eventsBtn","historyBtn"]:
               if f'id="{required}"' not in html:
                   errors.append(f"Missing required UI element: {required}")
           if "Otzaria.call('reader.addContextMenuItem'" in app and "label:" not in app:
               errors.append("Context menu template must use label")
           if "Otzaria.call('library.findBooks', {})" in app:
               errors.append("library.findBooks template must provide query")
-          for required in ["storage.set","storage.get","Otzaria.on(","snapshotMaybe","eventCode"]:
+          for required in ["storage.set","storage.get","Otzaria.on(","snapshotMaybe","eventCode","searchProject","missingPermissions","fixPermissions","preflight"]:
               if required not in app:
                   errors.append(f"Missing Studio feature marker: {required}")
 
