@@ -112,6 +112,15 @@ jobs:
         shell: bash
         run: node --check one-click-build.js
 
+      - name: Syntax · Studio 2.1 modules
+        if: always()
+        shell: bash
+        run: |
+          node --check plugin-generator.js
+          node --check testing-studio.js
+          node --check release-pro.js
+          node --check studio-polish.js
+
       - name: Plugin Studio regression checks
         shell: bash
         run: |
