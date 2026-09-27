@@ -62,3 +62,6 @@ html[dir="ltr"] body{text-align:left}html[dir="ltr"] .hubCard,html[dir="ltr"] .w
 
 /* Studio 3.0 search/diff/release */
 .searchGrid{display:grid;grid-template-columns:1fr 1fr auto auto;gap:7px;margin-bottom:10px}.diffGrid{max-height:58vh;overflow:auto}.diffLine{display:grid;grid-template-columns:50px 1fr 1fr;gap:5px;margin:3px 0}.diffLine pre{margin:0;padding:7px;overflow:auto;background:var(--color-surface-container-low);border-radius:6px}#oiText{width:100%;min-height:280px;box-sizing:border-box}@media(max-width:700px){.searchGrid,.diffLine{grid-template-columns:1fr}.diffLine b{position:sticky;top:0}}
+
+/* Studio 3.0 productivity */
+.dashGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.metric{padding:14px;border-radius:var(--radius-md);background:var(--color-surface-container-low);text-align:center}.metric b{display:block;font-size:1.5rem}.metric small{color:var(--color-on-surface-variant)}.compatTable{display:grid;gap:6px;max-height:52vh;overflow:auto}.themeLab{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}@media(max-width:700px){.dashGrid{grid-template-columns:1fr 1fr}}
