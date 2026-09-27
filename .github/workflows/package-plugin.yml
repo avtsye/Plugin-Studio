@@ -1,0 +1,130 @@
+name: Validate and package Otzaria plugin
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "screenshots/**"
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plugin-package-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-and-package:
+    name: Validate & package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Official Otzaria validator. Without store credentials it validates
+      # and builds only; it does not publish the plugin to the store.
+      - name: Validate with official Otzaria validator
+        uses: Otzaria/otzaria-plugin-validator@v1
+
+      - name: Read plugin metadata
+        id: meta
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, os
+          with open("manifest.json", "r", encoding="utf-8") as f:
+              manifest = json.load(f)
+          plugin_id = manifest["id"]
+          version = manifest["version"]
+          entrypoint = manifest["entrypoint"]
+          if not os.path.isfile(entrypoint):
+              raise SystemExit(f"Entrypoint does not exist: {entrypoint}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              print(f"id={plugin_id}", file=out)
+              print(f"version={version}", file=out)
+              print(f"filename={plugin_id}-{version}.otzplugin", file=out)
+          PY
+
+      # Mirrors Otzaria's package rules for repository metadata:
+      # development/CI folders, Markdown, LICENSE, dotfiles and lockfiles
+      # are not shipped. manifest.json remains at the archive root.
+      - name: Package .otzplugin
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, os, zipfile
+
+          with open("manifest.json", "r", encoding="utf-8") as f:
+              manifest = json.load(f)
+
+          output = f'{manifest["id"]}-{manifest["version"]}.otzplugin'
+          skip_dirs = {
+              ".git", ".svn", ".hg", ".idea", ".vscode", "node_modules",
+              "__pycache__", ".claude", ".github", "screenshots"
+          }
+
+          def metadata_file(name):
+              lower = name.lower()
+              return (
+                  name.startswith(".")
+                  or lower.endswith(".md")
+                  or lower.startswith("license")
+                  or lower.startswith("licence")
+                  or lower in {"package-lock.json", "yarn.lock", "pnpm-lock.yaml"}
+              )
+
+          files = []
+          for root, dirs, names in os.walk("."):
+              dirs[:] = [d for d in dirs if d not in skip_dirs and not d.startswith(".")]
+              for name in names:
+                  path = os.path.join(root, name)
+                  rel = os.path.relpath(path, ".").replace(os.sep, "/")
+                  if rel == output or name == ".otzignore" or metadata_file(name):
+                      continue
+                  files.append((path, rel))
+
+          if "manifest.json" not in {rel for _, rel in files}:
+              raise SystemExit("manifest.json must be at archive root")
+
+          entrypoint = manifest["entrypoint"].replace("\\", "/").lstrip("./")
+          if entrypoint not in {rel for _, rel in files}:
+              raise SystemExit(f"Entrypoint would not be packaged: {entrypoint}")
+
+          with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as z:
+              for path, rel in sorted(files, key=lambda x: x[1]):
+                  z.write(path, rel)
+
+          with zipfile.ZipFile(output) as z:
+              names = set(z.namelist())
+              if "manifest.json" not in names:
+                  raise SystemExit("Packaged archive is missing manifest.json")
+              if entrypoint not in names:
+                  raise SystemExit("Packaged archive is missing entrypoint")
+
+          print(f"Created {output} with {len(files)} files")
+          PY
+
+      - name: Upload installable plugin
+        uses: actions/upload-artifact@v4
+        with:
+          name: Plugin-Studio-${{ steps.meta.outputs.version }}
+          path: ${{ steps.meta.outputs.filename }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Build summary
+        shell: bash
+        run: |
+          {
+            echo "## Otzaria plugin package"
+            echo ""
+            echo "- ID: \`${{ steps.meta.outputs.id }}\`"
+            echo "- Version: \`${{ steps.meta.outputs.version }}\`"
+            echo "- File: \`${{ steps.meta.outputs.filename }}\`"
+            echo "- Official Otzaria validation: passed"
+          } >> "$GITHUB_STEP_SUMMARY"
