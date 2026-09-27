@@ -1,0 +1,4 @@
+(()=>{const A=window.PluginStudioAPI;if(!A)return;const t=k=>window.StudioI18n?.t(k)||k;
+function scan(){const hits=[];const rules=[[/https?:\/\//g,"URL"],[/\bfetch\s*\(/g,"fetch"],[/\bXMLHttpRequest\b/g,"XMLHttpRequest"],[/\bWebSocket\b/g,"WebSocket"],[/<script[^>]+src=["']https?:/gi,"CDN"],[/\bimport\s*\([^)]*https?:/g,"remote import"]];for(const [file,code] of Object.entries(A.state.files)){if(!/\.(js|html|css|json)$/.test(file))continue;for(const [re,type] of rules){re.lastIndex=0;let m;while((m=re.exec(code))){const line=code.slice(0,m.index).split("\n").length;hits.push({file,line,type,text:m[0]});if(!re.global)break}}}return hits}
+function open(){const h=scan();A.dialog(t("offlineScanner"),'<div class="notice">'+(h.length?h.length+" "+t("problems"):"✓ Offline")+'</div>'+h.map(x=>'<div class="problem error"><b>'+A.escapeHtml(x.file+":"+x.line)+'</b> '+A.escapeHtml(x.type)+'</div>').join(""))}
+window.OfflineScanner={scan,open}})();
