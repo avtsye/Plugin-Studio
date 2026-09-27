@@ -120,6 +120,7 @@ jobs:
           node --check testing-studio.js
           node --check release-pro.js
           node --check studio-polish.js
+          node --check editor-pro.js
 
       - name: Plugin Studio regression checks
         shell: bash
