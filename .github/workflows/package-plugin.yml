@@ -68,7 +68,7 @@ jobs:
               errors.append("library.findBooks template must provide query")
           if 'Otzaria.on("theme.changed"' in app and "events.subscribe:theme.changed" not in manifest.get("permissions", []):
               errors.append("theme.changed is used without its event subscription permission")
-          for required in ["storage.set","storage.get","Otzaria.on(","snapshotMaybe","eventCode","searchProject","missingPermissions","fixPermissions","preflight","pluginDoctor","apiPlayground","testRunner","offlineDocs","uiDesigner","releaseCenter","findReferences","refactorRename","snapshotDiff"]:
+          for required in ["storage.set","storage.get","Otzaria.on(","snapshotMaybe","eventCode","searchProject","missingPermissions","fixPermissions","preflight","pluginDoctor","apiPlayground","testRunner","offlineDocs","uiDesigner","releaseCenter","findReferences","refactorRename","snapshotDiff","goToLine","showApiHover","bracketStatus","updateBreadcrumbs"]:
               if required not in app:
                   errors.append(f"Missing Studio feature marker: {required}")
 
