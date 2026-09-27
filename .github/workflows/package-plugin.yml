@@ -75,7 +75,8 @@ jobs:
           node --check simple-ui.js
           node --check onboarding.js
           node --check one-click-build.js
-          test -f vendor/codemirror/codemirror.js || true
+          test -s vendor/codemirror/codemirror.js
+          test -s vendor/codemirror/codemirror.css
 
       - name: Plugin Studio regression checks
         shell: bash
@@ -99,7 +100,7 @@ jobs:
               errors.append("Plugin Studio must remain offline")
           if any(str(p).startswith("network.") for p in manifest.get("permissions", [])):
               errors.append("Plugin Studio manifest contains a network permission")
-          for required in ["editor","projects","designer","preview","importInput","templates","quickOpen","problems","renameFile","deleteFile","projectSearch","eventsBtn","historyBtn"]:
+          for required in ["editor","projects","newProject","importPackage","packageInput","preview","buildBtn","moreToolsBtn","modeBtn","helpBtn","designer","importInput","templates","quickOpen","problems","renameFile","deleteFile","projectSearch","eventsBtn","historyBtn","visualBuilderBtn","apiLabBtn","diagnosticsBtn","doctorBtn","packageCenterBtn","releaseWizardBtn","debugBtn","studioSettingsBtn"]:
               if f'id="{required}"' not in html:
                   errors.append(f"Missing required UI element: {required}")
           if "Otzaria.call('reader.addContextMenuItem'" in app and "label:" not in app:
