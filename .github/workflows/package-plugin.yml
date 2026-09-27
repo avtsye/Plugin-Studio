@@ -149,6 +149,9 @@ jobs:
           node --check recovery-center-3.js
           node --check studio-integration-3.js
 
+      - name: Comprehensive Studio audit
+        run: node scripts/audit-studio.mjs
+
       - name: Simulator bridge regression
         run: |
           node - <<'NODE'
