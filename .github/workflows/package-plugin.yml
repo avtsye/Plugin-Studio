@@ -54,29 +54,44 @@ jobs:
           test -s vendor/codemirror/codemirror.js
           test -s vendor/codemirror/codemirror.css
 
-      - name: JavaScript syntax check
+      - name: Syntax · core
         shell: bash
         run: |
           node --check app.js
           node --check sdk-spec.js
-          node --check editor-advanced.js
           node --check sdk-signatures.js
+
+      - name: Syntax · editor
+        if: always()
+        shell: bash
+        run: |
+          node --check editor-advanced.js
+          node --check editor-codemirror.js
+          node --check studio-settings.js
+          test -s vendor/codemirror/codemirror.js
+          test -s vendor/codemirror/codemirror.css
+
+      - name: Syntax · tools
+        if: always()
+        shell: bash
+        run: |
           node --check plugin-tools.js
           node --check diagnostics.js
           node --check debug-tools.js
           node --check package-center.js
           node --check visual-builder.js
           node --check release-wizard.js
-          node --check studio-settings.js
+
+      - name: Syntax · UX
+        if: always()
+        shell: bash
+        run: |
           node --check crash-recovery.js
-          node --check editor-codemirror.js
           node --check help.js
           node --check project-manager.js
           node --check simple-ui.js
           node --check onboarding.js
           node --check one-click-build.js
-          test -s vendor/codemirror/codemirror.js
-          test -s vendor/codemirror/codemirror.css
 
       - name: Plugin Studio regression checks
         shell: bash
