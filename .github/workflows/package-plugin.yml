@@ -122,6 +122,7 @@ jobs:
           node --check studio-polish.js
           node --check editor-pro.js
           node --check studio-shell.js
+          node --check i18n.js
           node --check permission-assistant.js
           node --check studio-timeline.js
           node --check otzaria-simulator.js
