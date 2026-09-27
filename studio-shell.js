@@ -1,8 +1,8 @@
 (()=>{const A=window.PluginStudioAPI,$=q=>document.querySelector(q);if(!A)return;
 const sections={
-develop:[["פרויקטים","projects"],["Plugin Generator","pluginGeneratorBtn"],["תבניות","templates"],["חיפוש בפרויקט","projectSearch"],["פקודות","quickOpen"],["API Lab","apiLabBtn"]],
+develop:[["פרויקטים","projects"],["Plugin Generator","pluginGeneratorBtn"],["תבניות","templates"],["חיפוש בפרויקט","projectSearch"],["פקודות","quickOpen"],["API Lab","apiLabBtn"],["Workflow Builder","workflowBuilderBtn"]],
 design:[["Visual Builder","visualBuilderBtn"],["Manifest Designer","designer"],["Theme / Preview","preview"],["SDK Explorer","sdkInfo"]],
-test:[["Testing Studio","testingStudioBtn"],["Diagnostics","diagnosticsBtn"],["Plugin Doctor","doctorBtn"],["Build","buildBtn"]],
+test:[["Testing Studio","testingStudioBtn"],["Diagnostics","diagnosticsBtn"],["Plugin Doctor","doctorBtn"],["Build","buildBtn"],["Otzaria Simulator","simulatorBtn"],["Test Recorder","testRecorderBtn"]],
 debug:[["Debug Inspector","debugBtn"],["אירועים","eventsBtn"],["גרסאות","historyBtn"],["כלי פיתוח","toolsBtn"]],
 release:[["Release Center","releaseProBtn"],["Release Wizard","releaseWizardBtn"],["Package Center","packageCenterBtn"],["ייצוא פרויקט","exportProject"]]
 };
