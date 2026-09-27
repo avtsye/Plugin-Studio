@@ -147,6 +147,7 @@ jobs:
           node --check event-simulator-3.js
           node --check dependency-graph-3.js
           node --check recovery-center-3.js
+          node --check studio-integration-3.js
           node --check permission-assistant.js
           node --check studio-timeline.js
           node --check otzaria-simulator.js
