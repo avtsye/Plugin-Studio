@@ -65,3 +65,6 @@ html[dir="ltr"] body{text-align:left}html[dir="ltr"] .hubCard,html[dir="ltr"] .w
 
 /* Studio 3.0 productivity */
 .dashGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.metric{padding:14px;border-radius:var(--radius-md);background:var(--color-surface-container-low);text-align:center}.metric b{display:block;font-size:1.5rem}.metric small{color:var(--color-on-surface-variant)}.compatTable{display:grid;gap:6px;max-height:52vh;overflow:auto}.themeLab{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}@media(max-width:700px){.dashGrid{grid-template-columns:1fr 1fr}}
+
+/* Final Studio 3.0 workspaces */
+.splitEditors{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.splitEditors textarea{min-height:55vh;width:100%;box-sizing:border-box;font-family:monospace}.eventStudio{display:grid;grid-template-columns:1fr 2fr auto;gap:8px}.eventStudio textarea{min-height:160px}.card pre{max-height:180px;overflow:auto}@media(max-width:700px){.splitEditors,.eventStudio{grid-template-columns:1fr}}
