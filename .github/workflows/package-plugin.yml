@@ -41,6 +41,7 @@ jobs:
           node --check plugin-tools.js
           node --check diagnostics.js
           node --check debug-tools.js
+          node --check package-center.js
 
       - name: Plugin Studio regression checks
         shell: bash
