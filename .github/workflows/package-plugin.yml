@@ -73,6 +73,8 @@ jobs:
           node --check help.js
           node --check project-manager.js
           node --check simple-ui.js
+          node --check onboarding.js
+          node --check one-click-build.js
           test -f vendor/codemirror/codemirror.js || true
 
       - name: Plugin Studio regression checks
