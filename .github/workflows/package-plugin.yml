@@ -136,6 +136,12 @@ jobs:
           node --check test-runner-3.js
           node --check accessibility-studio.js
           node --check theme-lab.js
+          node --check project-dashboard-3.js
+          node --check outline-3.js
+          node --check snippet-library-3.js
+          node --check template-gallery-3.js
+          node --check performance-profiler-3.js
+          node --check release-profiles-3.js
           node --check permission-assistant.js
           node --check studio-timeline.js
           node --check otzaria-simulator.js
