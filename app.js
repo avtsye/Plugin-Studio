@@ -113,3 +113,17 @@ function bracketStatus(){let p=E.selectionStart,ch=E.value[p]||E.value[p-1],map=
 E.addEventListener("keyup",bracketStatus);E.addEventListener("click",bracketStatus);
 const oldUpdateEditorVisuals=updateEditorVisuals;updateEditorVisuals=function(){oldUpdateEditorVisuals();updateBreadcrumbs();let lines=E.value.split("\n"),problems=collectProblems().filter(x=>x.text.includes(cur));let marks=new Map;for(let p of problems){let m=p.text.match(/(?:line|שורה)\s*(\d+)/i);if(m)marks.set(+m[1],p.level)}$("#gutter").innerHTML=lines.map((_,i)=>'<span class="'+(marks.get(i+1)==="error"?"gutter-error":marks.get(i+1)==="warning"?"gutter-warning":"")+'">'+(i+1)+'</span>').join("\n");syncEditorScroll()}
 COMMANDS.push(["Go to Line",goToLine]);
+
+window.PluginStudioAPI={
+  get state(){return st},
+  get currentFile(){return cur},
+  save,
+  dialog:dlg,
+  snapshot:snapshotMaybe,
+  refreshEditor:updateEditorVisuals,
+  problems:collectProblems,
+  openFile:file,
+  wordAtCursor,
+  references:findReferences,
+  escapeHtml:esc
+};
