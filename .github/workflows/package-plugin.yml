@@ -149,6 +149,14 @@ jobs:
           node --check recovery-center-3.js
           node --check studio-integration-3.js
 
+      - name: Simulator bridge regression
+        run: |
+          node - <<'NODE'
+          const s=require('fs').readFileSync('otzaria-simulator.js','utf8');
+          for(const token of ['plugin-studio-simulator','plugin-studio-host','window.Otzaria','srcdoc=buildDoc()','data-sim-file']) if(!s.includes(token)) throw new Error('Simulator bridge missing '+token);
+          if(s.includes('html.replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi,""')) throw new Error('Simulator must not strip project scripts');
+          NODE
+
       - name: Localization quality
         run: |
           node - <<'NODE'
@@ -158,7 +166,7 @@ jobs:
           const polish=fs.readFileSync('studio-polish.js','utf8');
           if(!polish.includes('data-i18n')) throw new Error('Studio menu is not translation-key based');
           const m=JSON.parse(fs.readFileSync('manifest.json','utf8'));
-          if(m.version!=='3.0.0') throw new Error('Expected Plugin Studio 3.0.0');
+          if(m.version!=='3.0.1') throw new Error('Expected Plugin Studio 3.0.1');
           NODE
           node --check permission-assistant.js
           node --check studio-timeline.js
