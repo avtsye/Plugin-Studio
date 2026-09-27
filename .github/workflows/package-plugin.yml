@@ -251,7 +251,7 @@ jobs:
           output = f'{manifest["id"]}-{manifest["version"]}.otzplugin'
           skip_dirs = {
               ".git", ".svn", ".hg", ".idea", ".vscode", "node_modules",
-              "__pycache__", ".claude", ".github", "screenshots"
+              "__pycache__", ".claude"
           }
 
           def metadata_file(name):
@@ -264,13 +264,73 @@ jobs:
                   or lower in {"package-lock.json", "yarn.lock", "pnpm-lock.yaml"}
               )
 
+          import re
+
+          def compile_ignore(raw):
+              pat = raw.strip()
+              if not pat or pat.startswith("#"):
+                  return None
+              negate = pat.startswith("!")
+              if negate:
+                  pat = pat[1:]
+              dir_only = pat.endswith("/")
+              if dir_only:
+                  pat = pat[:-1]
+              anchored = "/" in pat
+              pat = pat.lstrip("/")
+              out = ""
+              i = 0
+              while i < len(pat):
+                  ch = pat[i]
+                  if ch == "*":
+                      if i + 1 < len(pat) and pat[i+1] == "*":
+                          i += 1
+                          if i + 1 < len(pat) and pat[i+1] == "/":
+                              i += 1
+                              out += r"(?:[^/]+/)*"
+                          else:
+                              out += ".*"
+                      else:
+                          out += r"[^/]*"
+                  elif ch == "?":
+                      out += r"[^/]"
+                  else:
+                      out += re.escape(ch)
+                  i += 1
+              tail = r"/.*" if dir_only else r"(?:/.*)?"
+              prefix = "^" if anchored else r"(?:^|.*/)"
+              return negate, re.compile(prefix + out + tail + "$")
+
+          ignore_rules = []
+          if os.path.isfile(".otzignore"):
+              with open(".otzignore", encoding="utf-8") as fh:
+                  ignore_rules = [r for line in fh if (r := compile_ignore(line))]
+
+          def ignore_state(rel):
+              excluded = False
+              reincluded = False
+              for negate, rx in ignore_rules:
+                  if rx.search(rel):
+                      excluded = not negate
+                      reincluded = negate
+              return excluded, reincluded
+
+          def metadata_path(rel):
+              parts = rel.split("/")
+              return any(p == ".github" or p == "screenshots" or p.startswith(".") for p in parts[:-1]) or metadata_file(parts[-1])
+
           files = []
           for root, dirs, names in os.walk("."):
-              dirs[:] = [d for d in dirs if d not in skip_dirs and not d.startswith(".")]
+              dirs[:] = [d for d in dirs if d not in skip_dirs]
               for name in names:
                   path = os.path.join(root, name)
                   rel = os.path.relpath(path, ".").replace(os.sep, "/")
-                  if rel == output or name == ".otzignore" or metadata_file(name):
+                  if rel == output or name == ".otzignore":
+                      continue
+                  ignored, reincluded = ignore_state(rel)
+                  if metadata_path(rel) and not reincluded:
+                      continue
+                  if ignored:
                       continue
                   files.append((path, rel))
 
