@@ -56,3 +56,6 @@ dialog{width:min(820px,94vw);padding:22px;background:var(--color-surface);box-sh
 
 /* Locale direction */
 html[dir="ltr"] body{text-align:left}html[dir="ltr"] .hubCard,html[dir="ltr"] .workflowNode,html[dir="ltr"] dialog{text-align:left}html[dir="ltr"] .timeline .card{direction:ltr}html[dir="ltr"] input,html[dir="ltr"] textarea,html[dir="ltr"] select{direction:ltr}html[dir="ltr"] .CodeMirror{direction:ltr;text-align:left}
+
+/* Studio 3.0 intelligence */
+.symbolRow,.problemRow{width:100%;display:grid;grid-template-columns:1fr auto;gap:4px;text-align:start;margin:4px 0}.symbolRow small,.problemRow small{color:var(--color-on-surface-variant)}.problemRow span{grid-column:1/-1;text-align:start}.problemToolbar{display:flex;justify-content:space-between;gap:8px;position:sticky;top:0;background:var(--color-surface);padding:6px 0;z-index:1}#symList,#pRows{max-height:55vh;overflow:auto}
