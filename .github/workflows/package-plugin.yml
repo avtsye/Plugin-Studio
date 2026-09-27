@@ -53,6 +53,8 @@ jobs:
               errors.append("Generated code must use global Otzaria, not window.otzaria")
           if re.search(r"https?://", html + "\n" + Path("styles.css").read_text(encoding="utf-8")):
               errors.append("Runtime HTML/CSS contains an external URL")
+          if manifest.get("homepage"):
+              errors.append("Offline-only Plugin Studio must not declare homepage")
           if manifest.get("network", {}).get("enabled"):
               errors.append("Plugin Studio must remain offline")
           if any(str(p).startswith("network.") for p in manifest.get("permissions", [])):
@@ -64,6 +66,8 @@ jobs:
               errors.append("Context menu template must use label")
           if "Otzaria.call('library.findBooks', {})" in app:
               errors.append("library.findBooks template must provide query")
+          if 'Otzaria.on("theme.changed"' in app and "events.subscribe:theme.changed" not in manifest.get("permissions", []):
+              errors.append("theme.changed is used without its event subscription permission")
           for required in ["storage.set","storage.get","Otzaria.on(","snapshotMaybe","eventCode","searchProject","missingPermissions","fixPermissions","preflight","pluginDoctor","apiPlayground","testRunner","offlineDocs","uiDesigner","releaseCenter","findReferences","refactorRename","snapshotDiff"]:
               if required not in app:
                   errors.append(f"Missing Studio feature marker: {required}")
