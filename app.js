@@ -74,6 +74,7 @@ function hideApiHover(){setTimeout(()=>$("#editorHover")?.classList.add("hide"),
 E.addEventListener("mousemove",e=>{if(e.ctrlKey)showApiHover();else hideApiHover()});E.addEventListener("mouseleave",hideApiHover);E.addEventListener("click",e=>{if(e.ctrlKey){let w=wordAtCursor(),api=S.methods.find(x=>x===w||x.endsWith("."+w));if(api){e.preventDefault();inspectApi(api)}}});
 const pairs = {"(": ")", "[": "]", "{": "}", "'": "'", '"': '"'};
 E.addEventListener("keydown", e => {
+  if (window.StudioCodeMirror) return;
   if (e.ctrlKey && e.key.toLowerCase() === "g") {
     e.preventDefault();
     goToLine();
