@@ -142,6 +142,11 @@ jobs:
           node --check template-gallery-3.js
           node --check performance-profiler-3.js
           node --check release-profiles-3.js
+          node --check legacy-localization-3.js
+          node --check split-editor-3.js
+          node --check event-simulator-3.js
+          node --check dependency-graph-3.js
+          node --check recovery-center-3.js
           node --check permission-assistant.js
           node --check studio-timeline.js
           node --check otzaria-simulator.js
