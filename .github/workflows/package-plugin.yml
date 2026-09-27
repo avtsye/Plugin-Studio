@@ -148,6 +148,18 @@ jobs:
           node --check dependency-graph-3.js
           node --check recovery-center-3.js
           node --check studio-integration-3.js
+
+      - name: Localization quality
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const src=fs.readFileSync('i18n.js','utf8');
+          if(!src.includes('translations:{he,en}')) throw new Error('Missing central translation dictionaries');
+          const polish=fs.readFileSync('studio-polish.js','utf8');
+          if(!polish.includes('data-i18n')) throw new Error('Studio menu is not translation-key based');
+          const m=JSON.parse(fs.readFileSync('manifest.json','utf8'));
+          if(m.version!=='3.0.0') throw new Error('Expected Plugin Studio 3.0.0');
+          NODE
           node --check permission-assistant.js
           node --check studio-timeline.js
           node --check otzaria-simulator.js
