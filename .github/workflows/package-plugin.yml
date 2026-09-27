@@ -82,16 +82,35 @@ jobs:
           node --check visual-builder.js
           node --check release-wizard.js
 
-      - name: Syntax · UX
+      - name: Syntax · crash-recovery.js
         if: always()
         shell: bash
-        run: |
-          node --check crash-recovery.js
-          node --check help.js
-          node --check project-manager.js
-          node --check simple-ui.js
-          node --check onboarding.js
-          node --check one-click-build.js
+        run: node --check crash-recovery.js
+
+      - name: Syntax · help.js
+        if: always()
+        shell: bash
+        run: node --check help.js
+
+      - name: Syntax · project-manager.js
+        if: always()
+        shell: bash
+        run: node --check project-manager.js
+
+      - name: Syntax · simple-ui.js
+        if: always()
+        shell: bash
+        run: node --check simple-ui.js
+
+      - name: Syntax · onboarding.js
+        if: always()
+        shell: bash
+        run: node --check onboarding.js
+
+      - name: Syntax · one-click-build.js
+        if: always()
+        shell: bash
+        run: node --check one-click-build.js
 
       - name: Plugin Studio regression checks
         shell: bash
