@@ -64,7 +64,7 @@ jobs:
               errors.append("Context menu template must use label")
           if "Otzaria.call('library.findBooks', {})" in app:
               errors.append("library.findBooks template must provide query")
-          for required in ["storage.set","storage.get","Otzaria.on(","snapshotMaybe","eventCode","searchProject","missingPermissions","fixPermissions","preflight"]:
+          for required in ["storage.set","storage.get","Otzaria.on(","snapshotMaybe","eventCode","searchProject","missingPermissions","fixPermissions","preflight","pluginDoctor","apiPlayground","testRunner","offlineDocs","uiDesigner","releaseCenter","findReferences","refactorRename","snapshotDiff"]:
               if required not in app:
                   errors.append(f"Missing Studio feature marker: {required}")
 
