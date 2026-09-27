@@ -71,6 +71,7 @@ jobs:
           node --check crash-recovery.js
           node --check editor-codemirror.js
           node --check help.js
+          test -f vendor/codemirror/codemirror.js || true
 
       - name: Plugin Studio regression checks
         shell: bash
