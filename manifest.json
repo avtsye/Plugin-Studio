@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "plugin-studio",
   "name": "Plugin Studio",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Offline IDE for developing, testing, debugging and packaging Otzaria plugins",
   "author": "avtsye",
   "entrypoint": "index.html",
