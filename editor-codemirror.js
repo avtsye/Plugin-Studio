@@ -3,4 +3,4 @@ function syncFromTextarea(){if(syncing)return;const value=String(E.value||"").re
 cm.on("change",()=>{if(syncing)return;syncing=true;E.value=cm.getValue("\n");E.selectionStart=E.selectionEnd=cm.indexFromPos(cm.getCursor());E.dispatchEvent(new Event("input",{bubbles:true}));syncing=false});
 cm.on("cursorActivity",()=>{const p=cm.indexFromPos(cm.getCursor());E.selectionStart=E.selectionEnd=p});
 document.addEventListener("pluginstudio:file-opened",syncFromTextarea);document.addEventListener("pluginstudio:editor-sync",syncFromTextarea);
-requestAnimationFrame(()=>{syncFromTextarea();cm.focus()});window.StudioEditor={cm,syncFromTextarea,focus:()=>cm.focus(),getValue:()=>cm.getValue("\n"),setValue:v=>{E.value=String(v??"");syncFromTextarea()}}})();
+requestAnimationFrame(()=>{syncFromTextarea();window.StudioSettings?.apply?.();cm.focus()});window.StudioEditor={cm,syncFromTextarea,focus:()=>cm.focus(),getValue:()=>cm.getValue("\n"),setValue:v=>{E.value=String(v??"");syncFromTextarea()}}})();
