@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plugin Studio</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">&lt;/&gt;</span><div><b>Plugin Studio</b><small>Otzaria IDE · 0.1</small></div></div>
+  <div class="actions"><button id="newProject">פרויקט חדש</button><button id="runPreview" class="primary">▶ תצוגה מקדימה</button></div>
+</header>
+<div class="workbench">
+  <aside class="explorer">
+    <div class="pane-title"><span>EXPLORER</span><div><button title="קובץ חדש" id="addFile">＋</button><button title="שינוי שם" id="renameFile">✎</button><button title="מחיקה" id="deleteFile">⌫</button></div></div>
+    <div id="projectName" class="project-name"></div><div id="fileTree"></div>
+  </aside>
+  <main class="editor-area">
+    <div id="tabs" class="tabs"></div>
+    <div class="editor-wrap"><div id="lineNumbers" class="lines"></div><textarea id="editor" spellcheck="false"></textarea></div>
+    <div class="status"><span id="statusText">מוכן</span><span id="cursor">Ln 1, Col 1</span></div>
+  </main>
+  <aside class="sdk">
+    <div class="pane-title">OTZARIA SDK</div>
+    <input id="sdkSearch" placeholder="חיפוש API או הרשאה…">
+    <div class="sdk-tabs"><button data-sdk="methods" class="active">API</button><button data-sdk="permissions">הרשאות</button></div>
+    <div id="sdkList"></div>
+  </aside>
+</div>
+<section class="bottom">
+  <div class="bottom-tabs"><button data-panel="console" class="active">Console</button><button data-panel="preview">Preview</button><button data-panel="problems">Problems</button></div>
+  <div id="consolePanel" class="panel"></div>
+  <iframe id="previewPanel" class="panel hidden" sandbox="allow-scripts"></iframe>
+  <div id="problemsPanel" class="panel hidden"></div>
+</section>
+<script src="app.js"></script>
+</body></html>

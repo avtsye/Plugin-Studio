@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "plugin-studio",
+  "name": "Plugin Studio",
+  "version": "0.1.0",
+  "description": "סביבת פיתוח מלאה לתוספי Otzaria",
+  "author": "avtsye",
+  "homepage": "https://github.com/avtsye/Plugin-Studio",
+  "entrypoint": "index.html",
+  "minAppVersion": "0.9.98",
+  "sdkVersion": "1.x",
+  "stability": "experimental",
+  "permissions": [
+    "app.open_url","app.shortcuts","app.user_email.read","bookmarks.read","bookmarks.write",
+    "clipboard.read","database.read","fs.folder_access","fs.user_files.read","fs.user_files.write",
+    "history.read","history.write","library.books.read","library.content.read","library.links.read","library.refresh",
+    "navigation.write","network.access","network.localhost","notes.read","notes.write","plugin.open_other",
+    "published_data.write","reader.context_menu","reader.highlight","reader.open","reader.toolbar",
+    "search.dialog","search.fulltext.read","settings.read","tools.read","ui.create_shortcut",
+    "workspace.manage","workspace.read",
+    "events.subscribe:calendar.city_changed","events.subscribe:calendar.date_changed",
+    "events.subscribe:navigation.changed","events.subscribe:plugin.permissions_changed",
+    "events.subscribe:reader.current_book_changed","events.subscribe:reader.current_ref_changed",
+    "events.subscribe:reader.sectionContentChanged","events.subscribe:reader.selection_changed",
+    "events.subscribe:settings.changed","events.subscribe:workspace.changed"
+  ],
+  "network": {"enabled": true, "allowlist": []},
+  "contributes": {
+    "toolTab": {"title": "Plugin Studio", "order": 950, "defaultPinned": true, "iconName": "code_24_regular"},
+    "publishedDataTypes": [],
+    "databaseSources": []
+  }
+}
