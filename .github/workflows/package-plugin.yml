@@ -131,6 +131,11 @@ jobs:
           node --check diff-editor-3.js
           node --check manifest-intellisense.js
           node --check release-center-3.js
+          node --check symbol-tools-3.js
+          node --check compatibility-3.js
+          node --check test-runner-3.js
+          node --check accessibility-studio.js
+          node --check theme-lab.js
           node --check permission-assistant.js
           node --check studio-timeline.js
           node --check otzaria-simulator.js
