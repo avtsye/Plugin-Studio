@@ -59,3 +59,6 @@ html[dir="ltr"] body{text-align:left}html[dir="ltr"] .hubCard,html[dir="ltr"] .w
 
 /* Studio 3.0 intelligence */
 .symbolRow,.problemRow{width:100%;display:grid;grid-template-columns:1fr auto;gap:4px;text-align:start;margin:4px 0}.symbolRow small,.problemRow small{color:var(--color-on-surface-variant)}.problemRow span{grid-column:1/-1;text-align:start}.problemToolbar{display:flex;justify-content:space-between;gap:8px;position:sticky;top:0;background:var(--color-surface);padding:6px 0;z-index:1}#symList,#pRows{max-height:55vh;overflow:auto}
+
+/* Studio 3.0 search/diff/release */
+.searchGrid{display:grid;grid-template-columns:1fr 1fr auto auto;gap:7px;margin-bottom:10px}.diffGrid{max-height:58vh;overflow:auto}.diffLine{display:grid;grid-template-columns:50px 1fr 1fr;gap:5px;margin:3px 0}.diffLine pre{margin:0;padding:7px;overflow:auto;background:var(--color-surface-container-low);border-radius:6px}#oiText{width:100%;min-height:280px;box-sizing:border-box}@media(max-width:700px){.searchGrid,.diffLine{grid-template-columns:1fr}.diffLine b{position:sticky;top:0}}
