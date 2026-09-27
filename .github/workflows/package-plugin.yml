@@ -37,6 +37,7 @@ jobs:
           node --check app.js
           node --check sdk-spec.js
           node --check editor-advanced.js
+          node --check sdk-signatures.js
 
       - name: Plugin Studio regression checks
         shell: bash
