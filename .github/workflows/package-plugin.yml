@@ -127,6 +127,10 @@ jobs:
           node --check offline-scanner.js
           node --check symbol-index.js
           node --check problems-2.js
+          node --check global-search-3.js
+          node --check diff-editor-3.js
+          node --check manifest-intellisense.js
+          node --check release-center-3.js
           node --check permission-assistant.js
           node --check studio-timeline.js
           node --check otzaria-simulator.js
