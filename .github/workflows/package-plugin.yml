@@ -31,6 +31,39 @@ jobs:
       - name: Validate with official Otzaria validator
         uses: Otzaria/otzaria-plugin-validator@v1
 
+      - name: Plugin Studio regression checks
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, re
+
+          app = Path("app.js").read_text(encoding="utf-8")
+          html = Path("index.html").read_text(encoding="utf-8")
+          manifest = json.loads(Path("manifest.json").read_text(encoding="utf-8"))
+
+          errors = []
+          if "window.otzaria" in app:
+              errors.append("Generated code must use global Otzaria, not window.otzaria")
+          if re.search(r"https?://", html + "\n" + Path("styles.css").read_text(encoding="utf-8")):
+              errors.append("Runtime HTML/CSS contains an external URL")
+          if manifest.get("network", {}).get("enabled"):
+              errors.append("Plugin Studio must remain offline")
+          if any(str(p).startswith("network.") for p in manifest.get("permissions", [])):
+              errors.append("Plugin Studio manifest contains a network permission")
+          for required in ["editor","projects","designer","preview","importInput","templates","quickOpen","problems"]:
+              if f'id="{required}"' not in html:
+                  errors.append(f"Missing required UI element: {required}")
+          if "Otzaria.call('reader.addContextMenuItem'" in app and "label:" not in app:
+              errors.append("Context menu template must use label")
+          if "Otzaria.call('library.findBooks', {})" in app:
+              errors.append("library.findBooks template must provide query")
+
+          if errors:
+              raise SystemExit("\n".join("ERROR: "+e for e in errors))
+          print("Plugin Studio regression checks passed")
+          PY
+
       - name: Read plugin metadata
         id: meta
         shell: bash
