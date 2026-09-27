@@ -42,6 +42,10 @@ jobs:
           node --check diagnostics.js
           node --check debug-tools.js
           node --check package-center.js
+          node --check visual-builder.js
+          node --check release-wizard.js
+          node --check studio-settings.js
+          node --check crash-recovery.js
 
       - name: Plugin Studio regression checks
         shell: bash
