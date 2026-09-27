@@ -1,1 +1,38 @@
-{"schemaVersion":1,"id":"plugin-studio","name":"Plugin Studio","version":"0.2.0","description":"סביבת פיתוח אופליין לתוספי Otzaria","author":"avtsye","homepage":"https://github.com/avtsye/Plugin-Studio","entrypoint":"index.html","minAppVersion":"0.9.97","sdkVersion":"1.x","stability":"experimental","permissions":["app.shortcuts","fs.folder_access","fs.user_files.read","fs.user_files.write","navigation.write","reader.open","reader.context_menu","reader.toolbar","settings.read"],"network":{"enabled":false,"allowlist":[]},"contributes":{"toolTab":{"title":"Plugin Studio","order":950,"defaultPinned":true,"iconName":"code_24_regular"},"publishedDataTypes":[],"databaseSources":[]}}
+{
+  "schemaVersion": 1,
+  "id": "plugin-studio",
+  "name": "Plugin Studio",
+  "version": "1.0.0",
+  "description": "סביבת פיתוח אופליין מלאה לתוספי Otzaria",
+  "author": "avtsye",
+  "homepage": "https://github.com/avtsye/Plugin-Studio",
+  "entrypoint": "index.html",
+  "minAppVersion": "0.9.97",
+  "sdkVersion": "1.x",
+  "stability": "stable",
+  "permissions": [
+    "app.shortcuts",
+    "fs.folder_access",
+    "fs.user_files.read",
+    "fs.user_files.write",
+    "navigation.write",
+    "reader.open",
+    "reader.context_menu",
+    "reader.toolbar",
+    "settings.read"
+  ],
+  "network": {
+    "enabled": false,
+    "allowlist": []
+  },
+  "contributes": {
+    "toolTab": {
+      "title": "Plugin Studio",
+      "order": 950,
+      "defaultPinned": true,
+      "iconName": "code_24_regular"
+    },
+    "publishedDataTypes": [],
+    "databaseSources": []
+  }
+}
