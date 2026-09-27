@@ -125,5 +125,8 @@ window.PluginStudioAPI={
   openFile:file,
   wordAtCursor,
   references:findReferences,
-  escapeHtml:esc
+  escapeHtml:esc,
+  hostCall,
+  sdk:S,
+  importFiles(files,name){let k=Date.now().toString(36);db.projects[k]={name:name||"Imported Plugin",files};db.active=k;st=db.projects[k];cur=files["manifest.json"]?"manifest.json":Object.keys(files)[0];open=[cur];save();file(cur);check();return k}
 };
