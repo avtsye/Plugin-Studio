@@ -187,7 +187,7 @@ jobs:
           const h=fs.readFileSync("index.html","utf8");
           const shown=h.match(/Plugin Studio <small>([^<]+)<\/small>/)?.[1];
           if(shown!==m.version) throw new Error("Version mismatch: UI "+shown+" vs manifest "+m.version);
-          for(const f of ["intelligence-4-2.js","symbol-integration-4.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
+          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
           NODE
 
       - name: UI contract preservation
@@ -204,6 +204,23 @@ jobs:
           if "Plugin Studio 5 — visual refresh" not in css: raise SystemExit("PS5 visual layer missing")
           if css.count("Plugin Studio 5 — visual refresh") != 1: raise SystemExit("PS5 visual layer duplicated")
           print(f"OK: {len(required)} critical UI contracts preserved")
+          PY
+
+      - name: Workspace 5.1 presentation regression
+        run: |
+          node --check workspace-5-1.js
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path("workspace-5-1.js").read_text(encoding="utf-8")
+          css=Path("styles.css").read_text(encoding="utf-8")
+          html=Path("index.html").read_text(encoding="utf-8")
+          for x in ["activityBar","commandCenter","workspaceSplitter","zenMode","workspaceStatus","workspaceContext","plugin-studio-workspace-v51"]:
+              if x not in s and x not in css: raise SystemExit("Missing workspace feature: "+x)
+          for x in ["--ps-left","--ps-right","--ps-bottom","@media(max-width:760px)","@media(max-width:480px)"]:
+              if x not in css: raise SystemExit("Missing presentation guard: "+x)
+          if 'src="workspace-5-1.js"' not in html: raise SystemExit("Workspace runtime not loaded")
+          if "5.1.0" not in html: raise SystemExit("UI version not 5.1.0")
+          print("OK: 5.1 workspace and responsive presentation guards present")
           PY
 
       - name: Comprehensive Studio audit
