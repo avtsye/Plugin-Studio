@@ -379,6 +379,26 @@ jobs:
           print("OK: audited legacy tools no longer use bilingual slash labels")
           PY
 
+      - name: Remaining legacy localization regression
+        run: |
+          for f in help.js onboarding.js package-center.js permission-assistant.js plugin-generator.js project-manager.js recovery-center-3.js; do node --check "$f"; done
+          python3 - <<'PY'
+          from pathlib import Path
+          files=["help.js","onboarding.js","package-center.js","permission-assistant.js","plugin-generator.js","project-manager.js","recovery-center-3.js"]
+          forbidden=[" / ","בדיקות / Tests","הפצה / Release","שחזר / Restore","חיפוש / Search","שלח / Emit"]
+          hits=[]
+          for f in files:
+              s=Path(f).read_text(encoding="utf-8")
+              for x in forbidden:
+                  if x in s: hits.append(f+": "+x)
+              if "StudioLocale54" not in s: hits.append(f+": missing locale runtime")
+          if hits: raise SystemExit("Legacy localization audit failed: "+"; ".join(hits))
+          loc=Path("localization-5-4.js").read_text(encoding="utf-8")
+          for key in ["helpTitle","welcome","packageCenter","permissionAssistant","pluginGenerator","myProjects","recoveryCenter"]:
+              if loc.count(key)<2: raise SystemExit("Missing bilingual locale key: "+key)
+          print("OK: remaining legacy modules use one selected language")
+          PY
+
       - name: Comprehensive Studio audit
         run: node scripts/audit-studio.mjs
 
