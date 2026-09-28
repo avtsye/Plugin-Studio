@@ -189,3 +189,28 @@ html[dir="ltr"] .studioSections{padding-inline:238px 12px}
 .vb54Bar,.sim54{display:inline-flex;gap:4px;flex-wrap:wrap}.vbWorkspace #vbPreview[data-viewport="tablet"],#simFrame[data-viewport="tablet"]{width:min(768px,100%);margin-inline:auto}.vbWorkspace #vbPreview[data-viewport="mobile"],#simFrame[data-viewport="mobile"]{width:min(390px,100%);margin-inline:auto}.vbWorkspace #vbPreview[data-viewport]{transition:width .18s ease;box-shadow:0 0 0 1px var(--ps5-line)}
 #activityQuality{font-weight:800}
 @media(max-width:760px){.ide54Tools{display:none}.testHubMetrics{grid-template-columns:1fr 1fr}.ide54Refs button{grid-template-columns:1fr}.vb54Bar{width:100%;overflow-x:auto;flex-wrap:nowrap}}
+
+
+/* 5.4.1 design-guide compliance overrides */
+:root{
+  --ps54-surface:var(--color-surface,#fff);
+  --ps54-surface-soft:var(--color-surface-container-low,#f8fafc);
+  --ps54-text:var(--color-on-surface,#172033);
+  --ps54-muted:var(--color-on-surface-variant,#64748b);
+  --ps54-line:var(--color-outline-variant,#e2e8f0);
+  --ps54-accent:var(--color-primary,#2563eb);
+  --ps54-accent-soft:var(--color-primary-container,#eff6ff);
+  --ps54-error:var(--color-error,#dc2626);
+  --ps54-warning:var(--color-tertiary,#d97706);
+}
+.workspace51 .activityBar,.workspace51 header.topbar,.workspace51 .studioSections,.workspace51 main>aside,.workspace51 main>section,.workspace51 .bottom,.workspace51 dialog,.workspace51 .workspaceContext,.workspace51 .peekDefinition,.workspace51 .editorOutline{background:var(--ps54-surface)}
+.workspace51 .file:hover,.workspace51 button:hover,.workspace51 .commandCenter,.workspace51 .outlineHead,.workspace51 .peekHead,.workspace51 .workspaceStatus,.workspace51 .testHubMetrics>div,.workspace51 .refactorPreview pre{background:var(--ps54-surface-soft)}
+.workspace51 .file.active,.workspace51 .moreTools button:hover,.workspace51 .crumb:hover{background:var(--ps54-accent-soft);color:var(--ps54-accent)}
+.workspace51 .CodeMirror .inlineProblem.error{text-decoration-color:var(--ps54-error)}
+.workspace51 .CodeMirror .inlineProblem.warning{text-decoration-color:var(--ps54-warning)}
+.workspace51 .moreTools,.workspace51 .suggestions,.workspace51 .editorHover,.workspace51 .workspaceContext,.workspace51 .peekDefinition,.workspace51 .editorOutline,.workspace51 dialog{border-color:var(--ps54-line)}
+.workspace51 .activityBtn,.workspace51 .crumb,.workspace51 .workspaceStatus,.workspace51 .workspaceMeta,.workspace51 .ide54Refs small{color:var(--ps54-muted)}
+.workspace51 .file,.workspace51 .tab,.workspace51 .studioSections button,.workspace51 .outlineRows button,.workspace51 .ide54Refs button{font-size:.75rem}
+.workspace51 .breadcrumbs,.workspace51 .workspaceStatus,.workspace51 .peekHead{font-size:.6875rem}
+.workspace51 .file,.workspace51 .tab,.workspace51 .studioSections button,.workspace51 .commandCenter,.workspace51 .workspaceContext,.workspace51 .peekDefinition,.workspace51 .editorOutline,.workspace51 .testHubMetrics>div{border-radius:var(--radius-sm)}
+.workspace51 dialog{border-radius:var(--radius-lg)}
