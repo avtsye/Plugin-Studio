@@ -221,7 +221,7 @@ jobs:
           const h=fs.readFileSync("index.html","utf8");
           const shown=h.match(/Plugin Studio <small>([^<]+)<\/small>/)?.[1];
           if(shown!==m.version) throw new Error("Version mismatch: UI "+shown+" vs manifest "+m.version);
-          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
+          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
           NODE
 
       - name: UI contract preservation
@@ -324,6 +324,37 @@ jobs:
           missing=[x for x in required if x not in css]
           if missing: raise SystemExit("Missing topbar collision guards: "+", ".join(missing))
           print("OK: command center participates in topbar layout at desktop/tablet/mobile widths")
+          PY
+
+      - name: Full Hebrew English localization regression
+        run: |
+          node --check localization-5-4.js
+          node --check workspace-5-1.js
+          node --check editor-experience-5-2.js
+          node --check ide-intelligence-5-4.js
+          node --check studio-5-4.js
+          node --check studio-settings.js
+          python3 - <<'PY'
+          from pathlib import Path
+          loc=Path("localization-5-4.js").read_text(encoding="utf-8")
+          html=Path("index.html").read_text(encoding="utf-8")
+          required=["commandSearch","refactorPreview","peekRefs","quickFixes","importHealth","quality","runTests","studioSettings","editorFont","offlineScan"]
+          missing=[x for x in required if loc.count(x)<2]
+          if missing: raise SystemExit("Locale key missing from one language: "+", ".join(missing))
+          order=[html.find('src="localization-5-4.js"'),html.find('src="workspace-5-1.js"'),html.find('src="editor-experience-5-2.js"')]
+          if min(order)<0 or order!=sorted(order): raise SystemExit("Localization runtime must load before dynamic 5.x UI")
+          dynamic={
+            "workspace-5-1.js":["Search files, commands and symbols",">Open<",">Rename<",">Delete<"],
+            "editor-experience-5-2.js":["Refactor Preview",">Extract Variable<",">Extract Function<"],
+            "ide-intelligence-5-4.js":["Peek References ·",">Quick Fixes<","All relative imports resolve."],
+            "studio-5-4.js":[">Desktop<",">Tablet<",">Mobile<",">Run tests<",">Offline scan<"],
+            "studio-settings.js":["Studio Settings",">Word wrap<",">ממשק קומפקטי<"]
+          }
+          for file,bad in dynamic.items():
+              s=Path(file).read_text(encoding="utf-8")
+              hits=[x for x in bad if x in s]
+              if hits: raise SystemExit(file+" contains untranslated UI literals: "+", ".join(hits))
+          print("OK: Hebrew/English locale coverage and dynamic UI guards present")
           PY
 
       - name: Comprehensive Studio audit
