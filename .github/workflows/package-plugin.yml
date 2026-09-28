@@ -251,7 +251,7 @@ jobs:
           # required explicitly in the manifest. Keep this regression aligned
           # with the official SDK baselinePermissions source of truth.
           intelligence = Path("intelligence-4-2.js").read_text(encoding="utf-8")
-          for marker in ["Rename preview","data-rename-ref","kind:\"export\"","\"F2\":rename"]:
+          for marker in ["Rename preview","data-rename-ref","kind:\"export\"","\"F2\":rename","function imports(","function resolvePath(","extractVariable","extractFunction","valueHints","Ctrl-Alt-V","Ctrl-Alt-M"]:
               if marker not in intelligence:
                   errors.append(f"Missing 4.2 intelligence regression marker: {marker}")
           for required in ["storage.set","storage.get","Otzaria.on(","snapshotMaybe","eventCode","searchProject","missingPermissions","fixPermissions","preflight","pluginDoctor","apiPlayground","testRunner","offlineDocs","uiDesigner","releaseCenter","findReferences","refactorRename","snapshotDiff","goToLine","showApiHover","bracketStatus","updateBreadcrumbs"]:
@@ -260,6 +260,10 @@ jobs:
 
           if errors:
               raise SystemExit("\n".join("ERROR: "+e for e in errors))
+          qf = Path("intelligence-4.js").read_text(encoding="utf-8")
+          for marker in ["Quick Fix manifest defaults","window.Intelligence4={","addPermission,setMin"]:
+              if marker not in qf:
+                  errors.append(f"Missing enhanced Quick Fix marker: {marker}")
           print("Plugin Studio regression checks passed")
           PY
 
