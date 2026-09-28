@@ -131,6 +131,7 @@ jobs:
           node --check global-search-3.js
           node --check diff-editor-3.js
           node --check manifest-intellisense.js
+          node --check intelligence-4.js
           node --check release-center-3.js
           node --check symbol-tools-3.js
           node --check compatibility-3.js
