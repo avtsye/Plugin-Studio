@@ -187,7 +187,7 @@ jobs:
           const h=fs.readFileSync("index.html","utf8");
           const shown=h.match(/Plugin Studio <small>([^<]+)<\/small>/)?.[1];
           if(shown!==m.version) throw new Error("Version mismatch: UI "+shown+" vs manifest "+m.version);
-          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
+          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
           NODE
 
       - name: UI contract preservation
@@ -235,6 +235,23 @@ jobs:
           if not vals["editor"]<vals["panel"]<vals["header"]<vals["float"]<vals["menu"]<vals["modal"]:
               raise SystemExit("Invalid stacking hierarchy")
           print("OK: deterministic stacking hierarchy and overflow guards present")
+          PY
+
+      - name: Editor Experience 5.2 regression
+        run: |
+          node --check editor-experience-5-2.js
+          python3 - <<'PY'
+          from pathlib import Path
+          js=Path("editor-experience-5-2.js").read_text(encoding="utf-8")
+          css=Path("styles.css").read_text(encoding="utf-8")
+          html=Path("index.html").read_text(encoding="utf-8")
+          for x in ["peekDefinition","editorQuickFix","refactorPreview","inlineProblems","breadcrumbs","tabActions","Alt-F12","Ctrl-.","Ctrl-Alt-R"]:
+              if x not in js and x not in css: raise SystemExit("Missing 5.2 editor feature: "+x)
+          for x in [".peekDefinition",".editorOutline",".editorQuickFix","var(--z-menu)","var(--z-float)","@media(max-width:760px)"]:
+              if x not in css: raise SystemExit("Missing 5.2 presentation guard: "+x)
+          if 'src="editor-experience-5-2.js"' not in html: raise SystemExit("5.2 runtime not loaded")
+          if "5.2.0" not in html: raise SystemExit("UI version not 5.2.0")
+          print("OK: Plugin Studio 5.2 editor experience present")
           PY
 
       - name: Comprehensive Studio audit
