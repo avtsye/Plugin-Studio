@@ -132,6 +132,8 @@ jobs:
           node --check diff-editor-3.js
           node --check manifest-intellisense.js
           node --check intelligence-4.js
+          node --check intelligence-4-2.js
+          node --check symbol-integration-4.js
           node --check release-center-3.js
           node --check symbol-tools-3.js
           node --check compatibility-3.js
@@ -150,6 +152,17 @@ jobs:
           node --check dependency-graph-3.js
           node --check recovery-center-3.js
           node --check studio-integration-3.js
+
+      - name: Version consistency
+        run: |
+          node - <<'NODE'
+          const fs=require("fs");
+          const m=JSON.parse(fs.readFileSync("manifest.json","utf8"));
+          const h=fs.readFileSync("index.html","utf8");
+          const shown=h.match(/Plugin Studio <small>([^<]+)<\/small>/)?.[1];
+          if(shown!==m.version) throw new Error("Version mismatch: UI "+shown+" vs manifest "+m.version);
+          for(const f of ["intelligence-4-2.js","symbol-integration-4.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
+          NODE
 
       - name: Comprehensive Studio audit
         run: node scripts/audit-studio.mjs
