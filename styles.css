@@ -145,3 +145,28 @@ html[dir="ltr"] .studioSections{padding-inline:238px 12px}
 @media(max-width:1100px){.commandCenter{width:min(280px,28vw)}.commandCenter kbd{display:none}.workspace51 main{grid-template-columns:var(--ps-left) 4px minmax(0,1fr) 0 0}.workspace51 main>aside:last-child,.workspace51 .rightSplitter{display:none}.studioSections{padding-inline:10px}}
 @media(max-width:760px){:root{--ps-activity:38px}.workspace51{padding-inline-start:var(--ps-activity)}.activityBar{padding-top:92px;width:var(--ps-activity)}.activityBtn{width:30px;height:30px;min-height:30px;font-size:15px}.commandCenter{position:static;transform:none;order:3;width:min(100%,280px);margin-inline:auto}.commandCenter .commandLabel{font-size:11px}.workspace51 main{grid-template-columns:minmax(0,1fr)!important}.workspace51 main>aside,.workspace51 .workspaceSplitter.leftSplitter,.workspace51 .workspaceSplitter.rightSplitter{display:none!important}.workspace51 .bottom{max-height:38vh}.workspaceMeta span:first-child{display:none}}
 @media(max-width:480px){.activityBar{padding-top:126px}.commandCenter{width:180px}.commandCenter .commandLabel{max-width:125px}.workspaceMeta{gap:6px}.workspaceMeta #wsProblems{display:none}dialog{inset:7px;margin:auto;max-height:calc(100vh - 14px)}}
+
+
+/* 5.1.1 stacking model — deterministic front/back ordering */
+:root{--z-base:0;--z-editor:1;--z-panel:20;--z-header:60;--z-float:200;--z-menu:400;--z-modal:1000}
+.workspace51 main{position:relative;z-index:var(--z-base);isolation:isolate;overflow:hidden}
+.workspace51 main>section{position:relative;z-index:var(--z-editor);min-width:0;overflow:hidden}
+.workspace51 main>aside{position:relative;z-index:var(--z-panel);min-width:0;overflow:auto}
+.workspace51 #tabs,.workspace51 .breadcrumbs,.workspace51 .workspaceStatus{position:relative;z-index:calc(var(--z-panel) + 1)}
+.workspace51 .editorHost,.workspace51 .codePane,.workspace51 .CodeMirror{position:relative;z-index:var(--z-editor)}
+.workspace51 #highlight,.workspace51 #activeLine,.workspace51 #gutter,.workspace51 #minimap{z-index:2}
+.workspace51 header.topbar{position:relative;z-index:var(--z-header);overflow:visible}
+.workspace51 .studioSections{position:relative;z-index:calc(var(--z-header) - 1)}
+.workspace51 .activityBar{z-index:calc(var(--z-header) + 1)}
+.workspace51 .bottomSplitter{position:relative;z-index:calc(var(--z-panel) + 2)}
+.workspace51 .bottom{position:relative;z-index:var(--z-panel);overflow:hidden}
+.workspace51 .moreTools,.workspace51 .suggestions,.workspace51 .editorHover{z-index:var(--z-float)!important}
+.workspace51 .moreTools{position:absolute;max-height:min(70vh,560px);overflow:auto}
+.workspace51 .suggestions,.workspace51 .editorHover{position:absolute;max-width:min(520px,calc(100vw - 24px));max-height:min(45vh,360px);overflow:auto}
+.workspace51 .workspaceContext{z-index:var(--z-menu)}
+.workspace51 dialog{z-index:var(--z-modal);overflow:auto}
+.workspace51 dialog[open]{isolation:isolate}.workspace51 dialog::backdrop{z-index:calc(var(--z-modal) - 1)}
+.workspace51 .previewDialogHead{position:relative;z-index:2}.workspace51 #previewFrameLarge{position:relative;z-index:1}
+.workspace51 .CodeMirror-hints{z-index:var(--z-menu)!important;max-height:min(45vh,360px);overflow-y:auto}
+.workspace51 .CodeMirror-dialog{z-index:var(--z-float)!important}
+@media(max-width:760px){.workspace51 .moreTools{position:fixed;inset-inline:calc(var(--ps-activity) + 6px) 8px;top:92px;width:auto;max-height:calc(100vh - 110px)}}
