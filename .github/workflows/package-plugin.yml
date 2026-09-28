@@ -357,6 +357,28 @@ jobs:
           print("OK: Hebrew/English locale coverage and dynamic UI guards present")
           PY
 
+      - name: Legacy mixed-language UI regression
+        run: |
+          node --check accessibility-studio.js
+          node --check compatibility-3.js
+          node --check dependency-graph-3.js
+          node --check event-simulator-3.js
+          node --check global-search-3.js
+          node --check performance-profiler-3.js
+          node --check project-dashboard-3.js
+          python3 - <<'PY'
+          from pathlib import Path
+          files=["accessibility-studio.js","compatibility-3.js","dependency-graph-3.js","event-simulator-3.js","global-search-3.js","performance-profiler-3.js","project-dashboard-3.js"]
+          forbidden=[" / Accessibility"," / Compatibility"," / Dependency"," / Event"," / Search"," / Performance"," / Project"," / Tests"," / Release"," / Emit"," / Preview"]
+          hits=[]
+          for f in files:
+              s=Path(f).read_text(encoding="utf-8")
+              for x in forbidden:
+                  if x in s: hits.append(f+": "+x)
+          if hits: raise SystemExit("Mixed-language UI remains: "+"; ".join(hits))
+          print("OK: audited legacy tools no longer use bilingual slash labels")
+          PY
+
       - name: Comprehensive Studio audit
         run: node scripts/audit-studio.mjs
 
