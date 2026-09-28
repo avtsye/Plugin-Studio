@@ -95,6 +95,18 @@ jobs:
           node --check package-center.js
           node --check symbol-library-4.js
           node --check visual-builder.js
+      - name: Visual Builder preservation regression
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path("visual-builder.js").read_text(encoding="utf-8")
+          for marker in ['doc.querySelector(".plugin-ui")','current.replaceWith(next)','doc.body.appendChild(next)','script[data-vb-bindings]']:
+              if marker not in s:
+                  raise SystemExit("Missing Visual Builder preservation marker: "+marker)
+          if 'A.state.files[target]=generate()' not in s:
+              raise SystemExit("Visual Builder generation path missing")
+          print("OK: Visual Builder preserves document shell")
+          PY
           node --check release-wizard.js
 
       - name: Syntax · crash-recovery.js
