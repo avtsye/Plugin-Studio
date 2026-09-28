@@ -49,6 +49,40 @@ jobs:
           test -s vendor/codemirror/codemirror.js
           test -s vendor/codemirror/codemirror.css
 
+      - name: Sanitize vendored CodeMirror design tokens
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          replacements = {
+              "vendor/codemirror/codemirror.css": [
+                  ("font-family: monospace", "font-family: var(--font-main)"),
+                  ("color: black", "color: var(--color-on-surface)"),
+                  ("background: white", "background: var(--color-surface)"),
+                  ("background: #f7f7f7", "background: var(--color-surface-container-low)"),
+                  ("border-right: 1px solid #ddd", "border-right: 1px solid var(--color-outline-variant)"),
+                  ("color: #999", "color: var(--color-on-surface-variant)")
+              ],
+              "vendor/codemirror/foldgutter.css": [
+                  ("color: #b9f", "color: var(--color-primary)"),
+                  ("color: blue", "color: var(--color-primary)"),
+                  ("font-family: arial", "font-family: var(--font-main)")
+              ],
+              "vendor/codemirror/show-hint.css": [
+                  ("font-family: monospace", "font-family: var(--font-main)"),
+                  ("background: white", "background: var(--color-surface)"),
+                  ("color: #08f", "color: var(--color-primary)"),
+                  ("border-radius: 3px", "border-radius: var(--radius-sm)")
+              ]
+          }
+          for path, pairs in replacements.items():
+              p=Path(path)
+              s=p.read_text(encoding="utf-8")
+              for a,b in pairs: s=s.replace(a,b)
+              p.write_text(s,encoding="utf-8")
+          print("OK: vendored CodeMirror CSS normalized to Otzaria tokens")
+          PY
+
       # Official Otzaria validator. Without store credentials it validates
       # and builds only; it does not publish the plugin to the store.
       - name: HTML resource integrity
