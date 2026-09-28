@@ -224,6 +224,10 @@ jobs:
           # theme.changed is an Otzaria baseline event permission and must not be
           # required explicitly in the manifest. Keep this regression aligned
           # with the official SDK baselinePermissions source of truth.
+          intelligence = Path("intelligence-4-2.js").read_text(encoding="utf-8")
+          for marker in ["Rename preview","data-rename-ref","kind:\"export\"","\"F2\":rename"]:
+              if marker not in intelligence:
+                  errors.append(f"Missing 4.2 intelligence regression marker: {marker}")
           for required in ["storage.set","storage.get","Otzaria.on(","snapshotMaybe","eventCode","searchProject","missingPermissions","fixPermissions","preflight","pluginDoctor","apiPlayground","testRunner","offlineDocs","uiDesigner","releaseCenter","findReferences","refactorRename","snapshotDiff","goToLine","showApiHover","bracketStatus","updateBreadcrumbs"]:
               if required not in app:
                   errors.append(f"Missing Studio feature marker: {required}")
