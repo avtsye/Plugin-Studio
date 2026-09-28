@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Vendor CodeMirror locally
         shell: bash
@@ -402,7 +402,7 @@ jobs:
           PY
 
       - name: Upload installable plugin
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: Plugin-Studio-${{ steps.meta.outputs.version }}
           path: ${{ steps.meta.outputs.filename }}
