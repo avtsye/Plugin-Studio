@@ -214,3 +214,68 @@ html[dir="ltr"] .studioSections{padding-inline:238px 12px}
 .workspace51 .breadcrumbs,.workspace51 .workspaceStatus,.workspace51 .peekHead{font-size:.6875rem}
 .workspace51 .file,.workspace51 .tab,.workspace51 .studioSections button,.workspace51 .commandCenter,.workspace51 .workspaceContext,.workspace51 .peekDefinition,.workspace51 .editorOutline,.workspace51 .testHubMetrics>div{border-radius:var(--radius-sm)}
 .workspace51 dialog{border-radius:var(--radius-lg)}
+
+
+/* 5.4.2 topbar collision fix — command center participates in layout */
+.workspace51 header.topbar{
+  display:grid!important;
+  grid-template-columns:minmax(9.5rem,max-content) minmax(12rem,22rem) minmax(0,1fr);
+  grid-template-areas:"brand command nav";
+  align-items:center;
+  gap:.625rem;
+  min-height:3.5rem;
+  height:auto!important;
+  padding:.5rem .75rem!important;
+}
+.workspace51 header.topbar>b{grid-area:brand;white-space:nowrap;min-width:0}
+.workspace51 header.topbar>.commandCenter{
+  grid-area:command;
+  position:static!important;
+  inset:auto!important;
+  transform:none!important;
+  width:100%!important;
+  max-width:22rem;
+  min-width:0;
+  margin:0!important;
+  justify-self:stretch;
+}
+.workspace51 header.topbar>.mainNav{
+  grid-area:nav;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:.25rem;
+  min-width:0;
+  overflow-x:auto;
+  overflow-y:visible;
+  scrollbar-width:thin;
+  white-space:nowrap;
+  padding-block:.125rem;
+}
+.workspace51 header.topbar>.mainNav>button,.workspace51 header.topbar>.mainNav>span,.workspace51 header.topbar>.mainNav>label{flex:0 0 auto}
+.workspace51 header.topbar>.mainNav>.moreTools{white-space:normal}
+@media(max-width:74rem){
+  .workspace51 header.topbar{
+    grid-template-columns:minmax(9rem,max-content) minmax(0,1fr);
+    grid-template-areas:"brand command" "nav nav";
+  }
+  .workspace51 header.topbar>.commandCenter{max-width:none}
+  .workspace51 header.topbar>.mainNav{width:100%}
+  .workspace51 .activityBar{padding-top:6.5rem}
+}
+@media(max-width:48rem){
+  .workspace51 header.topbar{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:"brand" "command" "nav";
+    gap:.375rem;
+  }
+  .workspace51 header.topbar>b{justify-self:center}
+  .workspace51 header.topbar>.commandCenter{width:min(100%,30rem)!important;justify-self:center}
+  .workspace51 header.topbar>.mainNav{justify-content:flex-start}
+  .workspace51 .activityBar{padding-top:9.25rem}
+}
+@media(max-width:30rem){
+  .workspace51 header.topbar>.commandCenter .commandLabel{display:block;max-width:none}
+  .workspace51 header.topbar>.commandCenter{width:100%!important}
+  .workspace51 .activityBar{padding-top:10rem}
+}
