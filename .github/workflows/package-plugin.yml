@@ -190,6 +190,22 @@ jobs:
           for(const f of ["intelligence-4-2.js","symbol-integration-4.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
           NODE
 
+      - name: UI contract preservation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          html=Path("index.html").read_text(encoding="utf-8")
+          css=Path("styles.css").read_text(encoding="utf-8")
+          ids=set(re.findall(r'\bid=["\']([^"\']+)',html))
+          required={"editor","projects","newProject","importPackage","preview","previewLargeBtn","buildBtn","analyze","exportProject","moreToolsBtn","moreTools","modeBtn","helpBtn","files","tabs","breadcrumbs","status","sdk","console","problems","frame","dlg","dlgTitle","dlgBody","previewDlg","previewFrameLarge","visualBuilderBtn","symbolLibrary4Btn","apiLabBtn","designer","diagnosticsBtn","doctorBtn","packageCenterBtn","releaseWizardBtn","debugBtn","toolsBtn","eventsBtn","historyBtn","templates","projectSearch","fileSearchBtn","foldBtn","quickOpen","studioSettingsBtn"}
+          missing=sorted(required-ids)
+          if missing: raise SystemExit("UI contract IDs missing: "+", ".join(missing))
+          if "Plugin Studio 5 — visual refresh" not in css: raise SystemExit("PS5 visual layer missing")
+          if css.count("Plugin Studio 5 — visual refresh") != 1: raise SystemExit("PS5 visual layer duplicated")
+          print(f"OK: {len(required)} critical UI contracts preserved")
+          PY
+
       - name: Comprehensive Studio audit
         run: node scripts/audit-studio.mjs
 
