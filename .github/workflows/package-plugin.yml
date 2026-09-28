@@ -207,8 +207,9 @@ jobs:
               errors.append("Context menu template must use label")
           if "Otzaria.call('library.findBooks', {})" in app:
               errors.append("library.findBooks template must provide query")
-          if 'Otzaria.on("theme.changed"' in app and "events.subscribe:theme.changed" not in manifest.get("permissions", []):
-              errors.append("theme.changed is used without its event subscription permission")
+          # theme.changed is an Otzaria baseline event permission and must not be
+          # required explicitly in the manifest. Keep this regression aligned
+          # with the official SDK baselinePermissions source of truth.
           for required in ["storage.set","storage.get","Otzaria.on(","snapshotMaybe","eventCode","searchProject","missingPermissions","fixPermissions","preflight","pluginDoctor","apiPlayground","testRunner","offlineDocs","uiDesigner","releaseCenter","findReferences","refactorRename","snapshotDiff","goToLine","showApiHover","bracketStatus","updateBreadcrumbs"]:
               if required not in app:
                   errors.append(f"Missing Studio feature marker: {required}")
