@@ -223,6 +223,20 @@ jobs:
           print("OK: 5.1 workspace and responsive presentation guards present")
           PY
 
+      - name: Stacking and overflow regression
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          css=Path("styles.css").read_text(encoding="utf-8")
+          required=["--z-editor","--z-panel","--z-header","--z-float","--z-menu","--z-modal","isolation:isolate",".workspace51 .moreTools",".workspace51 .suggestions",".workspace51 dialog",".workspace51 .CodeMirror-hints"]
+          missing=[x for x in required if x not in css]
+          if missing: raise SystemExit("Missing stacking guards: "+", ".join(missing))
+          vals={"editor":1,"panel":20,"header":60,"float":200,"menu":400,"modal":1000}
+          if not vals["editor"]<vals["panel"]<vals["header"]<vals["float"]<vals["menu"]<vals["modal"]:
+              raise SystemExit("Invalid stacking hierarchy")
+          print("OK: deterministic stacking hierarchy and overflow guards present")
+          PY
+
       - name: Comprehensive Studio audit
         run: node scripts/audit-studio.mjs
 
