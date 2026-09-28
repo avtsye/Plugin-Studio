@@ -10,7 +10,7 @@ const globals=[...html.matchAll(/<script\s+src=["']([^"']+\.js)["']/g)].map(m=>m
 const order=[["i18n.js","studio-polish.js"],["otzaria-simulator.js","event-simulator-3.js"],["symbol-index.js","symbol-tools-3.js"],["testing-studio.js","test-runner-3.js"],["release-center-3.js","release-profiles-3.js"]];
 for(const [a,b] of order)if(pos[a]>=pos[b])errors.push("Load order: "+a+" must precede "+b);
 const manifest=JSON.parse(fs.readFileSync("manifest.json","utf8"));if(manifest.network?.enabled)errors.push("Studio network must remain disabled");
-if(!/^4\.\d+\.\d+$/.test(manifest.version))errors.push("Expected Studio 4.x semantic version");
+if(!/^[45]\.\d+\.\d+$/.test(manifest.version))errors.push("Expected Studio 4.x/5.x semantic version");
 const sim=all["otzaria-simulator.js"]||"";for(const token of ["window.Otzaria","plugin-studio-simulator","plugin-studio-host","buildDoc","data-sim-file"])if(!sim.includes(token))errors.push("Simulator missing "+token);
 const integration=all["studio-integration-3.js"]||"";for(const n of ["OtzariaSimulator","WorkflowBuilder","TestRecorder","ReleaseCenter3","SplitEditor3"])if(!integration.includes(n))errors.push("Integration check missing "+n);
 const badBilingual=[];for(const [f,c] of Object.entries(all))if(/עברית\s*\/\s*English|שמור\s*\/\s*Save|חדש\s*\/\s*New|בדיקות\s*\/\s*Tests/.test(c))badBilingual.push(f);if(badBilingual.length)warn.push("Mixed bilingual UI remains: "+[...new Set(badBilingual)].join(", "));
