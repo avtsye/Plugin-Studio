@@ -11,7 +11,6 @@
   "stability": "stable",
   "permissions": [
     "app.shortcuts",
-    "events.subscribe:theme.changed",
     "fs.folder_access",
     "fs.user_files.read",
     "fs.user_files.write",
@@ -30,7 +29,7 @@
       "title": "Plugin Studio",
       "order": 950,
       "defaultPinned": true,
-      "iconName": "code_24_regular"
+      "iconName": "document_html_24_regular"
     },
     "publishedDataTypes": [],
     "databaseSources": []
