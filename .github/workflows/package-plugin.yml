@@ -308,6 +308,24 @@ jobs:
           print("OK: bundled 5.3 intelligence and 5.4 quality workspace present")
           PY
 
+      - name: Topbar collision regression
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          css=Path("styles.css").read_text(encoding="utf-8")
+          required=[
+            "5.4.2 topbar collision fix",
+            'grid-template-areas:"brand command nav"',
+            'grid-template-areas:"brand command" "nav nav"',
+            'grid-template-areas:"brand" "command" "nav"',
+            "position:static!important",
+            "overflow-x:auto"
+          ]
+          missing=[x for x in required if x not in css]
+          if missing: raise SystemExit("Missing topbar collision guards: "+", ".join(missing))
+          print("OK: command center participates in topbar layout at desktop/tablet/mobile widths")
+          PY
+
       - name: Comprehensive Studio audit
         run: node scripts/audit-studio.mjs
 
