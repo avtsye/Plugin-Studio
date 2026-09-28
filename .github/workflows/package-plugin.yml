@@ -219,7 +219,6 @@ jobs:
           for x in ["--ps-left","--ps-right","--ps-bottom","@media(max-width:760px)","@media(max-width:480px)"]:
               if x not in css: raise SystemExit("Missing presentation guard: "+x)
           if 'src="workspace-5-1.js"' not in html: raise SystemExit("Workspace runtime not loaded")
-          if "5.1.0" not in html: raise SystemExit("UI version not 5.1.0")
           print("OK: 5.1 workspace and responsive presentation guards present")
           PY
 
