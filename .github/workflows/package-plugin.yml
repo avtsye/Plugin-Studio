@@ -51,6 +51,20 @@ jobs:
 
       # Official Otzaria validator. Without store credentials it validates
       # and builds only; it does not publish the plugin to the store.
+      - name: HTML resource integrity
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          html=Path("index.html").read_text(encoding="utf-8")
+          refs=re.findall(r'''(?:src|href)=["']([^"'?#]+)["']''', html)
+          local=[x for x in refs if not x.startswith(("http://","https://","data:","#"))]
+          missing=[x for x in local if not Path(x).is_file()]
+          if missing:
+              raise SystemExit("Missing local resources: "+", ".join(missing))
+          print(f"OK: {len(local)} local HTML resources resolved")
+          PY
+
       - name: Validate with official Otzaria validator
         uses: Otzaria/otzaria-plugin-validator@v1
 
