@@ -645,7 +645,7 @@ jobs:
               if x not in app: raise SystemExit("Core API lost after UI work: "+x)
           if '!window.ExplorerCommand55' not in workspace:
               raise SystemExit("Legacy Ctrl+K handler is not safely delegated")
-          if 'stopImmediatePropagation();palette()' not in explorer:
+          if 'palette()' not in explorer or 'key.toLowerCase()==="k"' not in explorer:
               raise SystemExit("Unified Ctrl+K command path missing")
           order=["stability-5-5.js","friendly-workspace-5-5.js","new-plugin-wizard-5-5.js","modern-ui-5-5.js","guidance-home-5-5.js","explorer-command-5-5.js","chrome-settings-5-5.js"]
           pos=[html.find('src="'+x+'"') for x in order]
@@ -681,6 +681,30 @@ jobs:
           if html.find('src="interaction-hardening-5-5.js"') < html.find('src="chrome-settings-5-5.js"'):
               raise SystemExit("Interaction hardening must load after visual chrome")
           print("OK: Quick Fix, tab state and critical interactions are hardened")
+          PY
+
+      - name: Browser structure safety regression
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          explorer=Path("explorer-command-5-5.js").read_text(encoding="utf-8")
+          chrome=Path("chrome-settings-5-5.js").read_text(encoding="utf-8")
+          wizard=Path("new-plugin-wizard-5-5.js").read_text(encoding="utf-8")
+          hard=Path("interaction-hardening-5-5.js").read_text(encoding="utf-8")
+          if "OtzariaSDKSpec" in explorer or "OTZARIA_SDK_SPEC" not in explorer:
+              raise SystemExit("Command Center uses a non-canonical SDK global")
+          if 'createElement("button");close.className="tabClose55"' in chrome:
+              raise SystemExit("Invalid nested button remains in browser tabs")
+          if 'createElement("span");close.className="tabClose55"' not in chrome:
+              raise SystemExit("Safe tab close control missing")
+          if 'closest("h4>span")' in chrome:
+              raise SystemExit("Sidebar toggle still ignores clicks on its contents")
+          for name,src in [("Explorer",explorer),("Settings",chrome),("Wizard",wizard)]:
+              if "stopImmediatePropagation" in src:
+                  raise SystemExit(name+" still uses aggressive click interception")
+          if 'aria-disabled' not in hard:
+              raise SystemExit("Tab close disabled state is not accessible")
+          print("OK: browser DOM and event interception hazards removed")
           PY
 
       - name: Comprehensive Studio audit
