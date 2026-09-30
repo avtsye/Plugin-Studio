@@ -301,8 +301,10 @@ jobs:
               if x not in ide: raise SystemExit("Missing bundled 5.3 feature: "+x)
           for x in ["testHub","builder","simulatorPreset","activityQuality","vb54Desktop","hubDebug","hubA11y"]:
               if x not in q: raise SystemExit("Missing 5.4 quality feature: "+x)
-          for x in ['src="ide-intelligence-5-4.js"','src="studio-5-4.js"',"5.4.0"]:
-              if x not in html: raise SystemExit("Missing 5.4 runtime/version marker: "+x)
+          for x in ['src="ide-intelligence-5-4.js"','src="studio-5-4.js"']:
+              if x not in html: raise SystemExit("Missing 5.4 runtime marker: "+x)
+          if not any(v in html for v in ["5.4.0","5.5.0"]):
+              raise SystemExit("UI version older than bundled 5.4 baseline")
           for x in [".ide54Tools",".testHubMetrics",".vb54Bar","data-viewport"]:
               if x not in css: raise SystemExit("Missing 5.4 presentation marker: "+x)
           print("OK: bundled 5.3 intelligence and 5.4 quality workspace present")
