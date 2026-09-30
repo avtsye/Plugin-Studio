@@ -452,6 +452,26 @@ jobs:
           print("OK: 5.5 Problems, Split Editor and dialog migration present")
           PY
 
+      - name: Studio 5.5 tabs and Quick Fix regression
+        run: |
+          node --check editor-experience-5-2.js
+          node --check ide-intelligence-5-4.js
+          node --check app.js
+          python3 - <<'PY'
+          from pathlib import Path
+          e=Path("editor-experience-5-2.js").read_text(encoding="utf-8")
+          i=Path("ide-intelligence-5-4.js").read_text(encoding="utf-8")
+          a=Path("app.js").read_text(encoding="utf-8")
+          for x in ["IDE54?.quickFixMenu","L(\"problem\")"]:
+              if x not in e: raise SystemExit("Missing unified Quick Fix feature: "+x)
+          for x in ["recentMenu","ide54Recent","aria-pressed","pinned"]:
+              if x not in i: raise SystemExit("Missing 5.5 tab feature: "+x)
+          migrated=["לא ניתן לשמור את הפרויקט","manifest.json אינו תקין","לא ניתן למחוק את manifest.json","אין snapshots להשוואה"]
+          for x in migrated:
+              if 'alert("'+x in a: raise SystemExit("Core alert not migrated: "+x)
+          print("OK: Tabs, Quick Fix and first core dialog migration present")
+          PY
+
       - name: Comprehensive Studio audit
         run: node scripts/audit-studio.mjs
 
