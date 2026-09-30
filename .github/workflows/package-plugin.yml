@@ -221,7 +221,7 @@ jobs:
           const h=fs.readFileSync("index.html","utf8");
           const shown=h.match(/Plugin Studio <small>([^<]+)<\/small>/)?.[1];
           if(shown!==m.version) throw new Error("Version mismatch: UI "+shown+" vs manifest "+m.version);
-          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js","stability-5-5.js","friendly-workspace-5-5.js","new-plugin-wizard-5-5.js","modern-ui-5-5.js","guidance-home-5-5.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
+          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js","stability-5-5.js","friendly-workspace-5-5.js","new-plugin-wizard-5-5.js","modern-ui-5-5.js","guidance-home-5-5.js","explorer-command-5-5.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
           NODE
 
       - name: UI contract preservation
@@ -604,6 +604,26 @@ jobs:
           if 'src="guidance-home-5-5.js"' not in html:
               raise SystemExit("Guidance runtime not loaded")
           print("OK: guided Home, contextual help and Build Center are present")
+          PY
+
+      - name: Explorer and Command Center 5.5 regression
+        run: |
+          node --check explorer-command-5-5.js
+          python3 - <<'PY'
+          from pathlib import Path
+          js=Path("explorer-command-5-5.js").read_text(encoding="utf-8")
+          app=Path("app.js").read_text(encoding="utf-8")
+          css=Path("styles.css").read_text(encoding="utf-8")
+          html=Path("index.html").read_text(encoding="utf-8")
+          for x in ["fileType55","fileMore55","newFileTypes","palette55","storage.get" if False else "OtzariaSDKSpec"]:
+              if x not in js: raise SystemExit("Explorer/Command feature missing: "+x)
+          for x in ["addFile(name", "starterFiles"]:
+              if x not in app: raise SystemExit("Safe Explorer API missing: "+x)
+          for x in [".modernFile",".fileMenu55",".newFileTypes",".paletteResults55"]:
+              if x not in css: raise SystemExit("Explorer/Command styling missing: "+x)
+          if 'src="explorer-command-5-5.js"' not in html:
+              raise SystemExit("Explorer/Command runtime not loaded")
+          print("OK: modern Explorer and unified Command Center are present")
           PY
 
       - name: Comprehensive Studio audit
