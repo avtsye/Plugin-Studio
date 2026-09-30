@@ -430,6 +430,28 @@ jobs:
           print("OK: legacy dialog debt is bounded while migration continues")
           PY
 
+      - name: Studio 5.5 editor workflows regression
+        run: |
+          node --check problems-2.js
+          node --check split-editor-3.js
+          node --check plugin-tools.js
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("problems-2.js").read_text(encoding="utf-8")
+          s=Path("split-editor-3.js").read_text(encoding="utf-8")
+          t=Path("plugin-tools.js").read_text(encoding="utf-8")
+          css=Path("styles.css").read_text(encoding="utf-8")
+          for x in ["counts","pFilter","data-pcol","problemCounts","updateBadge"]:
+              if x not in p: raise SystemExit("Missing Problems 5.5 feature: "+x)
+          for x in ["splitDirty","saveChanges","Studio55.confirm","splitRightName"]:
+              if x not in s: raise SystemExit("Missing Split Editor 5.5 feature: "+x)
+          if "Studio55.prompt" not in t or "Studio55?.alert" not in t:
+              raise SystemExit("Plugin tools not migrated to Studio 5.5 dialogs")
+          for x in [".problemToolbar",".problemRow.error","#problemsTab[data-count]",".splitEditors"]:
+              if x not in css: raise SystemExit("Missing editor workflow CSS: "+x)
+          print("OK: 5.5 Problems, Split Editor and dialog migration present")
+          PY
+
       - name: Comprehensive Studio audit
         run: node scripts/audit-studio.mjs
 
