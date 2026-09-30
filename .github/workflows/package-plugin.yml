@@ -499,7 +499,7 @@ jobs:
           app=Path("app.js").read_text(encoding="utf-8")
           spec=Path("sdk-spec.js").read_text(encoding="utf-8")
           data=json.loads(spec.split("=",1)[1].rstrip(";\n"))
-          expected=["app.getInfo","app.getTheme","library.listRecentBooks","library.findBooks","reader.getCurrentState","reader.openBook","ui.showMessage"]
+          expected=["app.getInfo","app.getTheme","library.listRecentBooks","library.findBooks","reader.getCurrentState","reader.openBook","ui.showMessage","reader.addToolbarItem","reader.removeToolbarItem","storage.get","storage.set"]
           missing=[x for x in expected if x not in data["apiMethods"]]
           if missing: raise SystemExit("Default project references non-SDK APIs: "+", ".join(missing))
           absent=[x for x in expected if x not in app]
@@ -510,6 +510,20 @@ jobs:
               if p and p not in perms: raise SystemExit("Default project lacks permission for "+api+": "+p)
           if "API אמיתי" not in app: raise SystemExit("Default project must identify itself as real SDK example")
           print("OK: default project APIs exist in SDK and required permissions are covered")
+          PY
+
+      - name: Quick Fix lightbulb regression
+        run: |
+          node --check ide-intelligence-5-4.js
+          python3 - <<'PY'
+          from pathlib import Path
+          q=Path("ide-intelligence-5-4.js").read_text(encoding="utf-8")
+          loc=Path("localization-5-4.js").read_text(encoding="utf-8")
+          if 'noQuickFixes' not in q or 'return true}A.dialog' not in q:
+              raise SystemExit("Quick Fix lightbulb can still fail silently")
+          if loc.count("noQuickFixes")<2:
+              raise SystemExit("Quick Fix empty state is not bilingual")
+          print("OK: Quick Fix lightbulb always responds visibly")
           PY
 
       - name: Comprehensive Studio audit
