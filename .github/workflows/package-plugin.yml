@@ -221,7 +221,7 @@ jobs:
           const h=fs.readFileSync("index.html","utf8");
           const shown=h.match(/Plugin Studio <small>([^<]+)<\/small>/)?.[1];
           if(shown!==m.version) throw new Error("Version mismatch: UI "+shown+" vs manifest "+m.version);
-          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js","stability-5-5.js","friendly-workspace-5-5.js","new-plugin-wizard-5-5.js","modern-ui-5-5.js","guidance-home-5-5.js","explorer-command-5-5.js","chrome-settings-5-5.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
+          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js","stability-5-5.js","friendly-workspace-5-5.js","new-plugin-wizard-5-5.js","modern-ui-5-5.js","guidance-home-5-5.js","explorer-command-5-5.js","chrome-settings-5-5.js","interaction-hardening-5-5.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
           NODE
 
       - name: UI contract preservation
@@ -653,6 +653,34 @@ jobs:
           for x in ["sectionToggle55","tabClose55","openSettings","statusReady55"]:
               if x not in chrome: raise SystemExit("Polished chrome feature missing: "+x)
           print("OK: visual layers preserve critical functions and runtime contracts")
+          PY
+
+      - name: Interaction hardening regression
+        run: |
+          node --check interaction-hardening-5-5.js
+          python3 - <<'PY'
+          from pathlib import Path
+          app=Path("app.js").read_text(encoding="utf-8")
+          intel=Path("intelligence-4.js").read_text(encoding="utf-8")
+          exp=Path("editor-experience-5-2.js").read_text(encoding="utf-8")
+          ide=Path("ide-intelligence-5-4.js").read_text(encoding="utf-8")
+          chrome=Path("chrome-settings-5-5.js").read_text(encoding="utf-8")
+          hard=Path("interaction-hardening-5-5.js").read_text(encoding="utf-8")
+          html=Path("index.html").read_text(encoding="utf-8")
+          if "closeFile(name)" not in app or "get openFiles" not in app:
+              raise SystemExit("Real tab state API missing")
+          if "A.closeFile?.(f)" not in chrome:
+              raise SystemExit("Visual tab close is not wired to core state")
+          owners=sum('"Ctrl-."' in x for x in (intel,exp,ide))
+          if owners != 1 or '"Ctrl-."' not in ide:
+              raise SystemExit("Ctrl+. must have exactly one owner, IDE54; found "+str(owners))
+          for x in ["IDE54?.quickFixMenu","interactionHealth","A.closeFile"]:
+              if x not in hard: raise SystemExit("Interaction hardening missing: "+x)
+          if 'src="interaction-hardening-5-5.js"' not in html:
+              raise SystemExit("Interaction hardening runtime not loaded")
+          if html.find('src="interaction-hardening-5-5.js"') < html.find('src="chrome-settings-5-5.js"'):
+              raise SystemExit("Interaction hardening must load after visual chrome")
+          print("OK: Quick Fix, tab state and critical interactions are hardened")
           PY
 
       - name: Comprehensive Studio audit
