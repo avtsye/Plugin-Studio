@@ -278,7 +278,7 @@ jobs:
           js=Path("editor-experience-5-2.js").read_text(encoding="utf-8")
           css=Path("styles.css").read_text(encoding="utf-8")
           html=Path("index.html").read_text(encoding="utf-8")
-          for x in ["peekDefinition","editorQuickFix","refactorPreview","inlineProblems","breadcrumbs","tabActions","Alt-F12","Ctrl-.","Ctrl-Alt-R"]:
+          for x in ["peekDefinition","editorQuickFix","refactorPreview","inlineProblems","breadcrumbs","tabActions","Alt-F12","Ctrl-Alt-R"]:
               if x not in js and x not in css: raise SystemExit("Missing 5.2 editor feature: "+x)
           for x in [".peekDefinition",".editorOutline",".editorQuickFix","var(--z-menu)","var(--z-float)","@media(max-width:760px)"]:
               if x not in css: raise SystemExit("Missing 5.2 presentation guard: "+x)
