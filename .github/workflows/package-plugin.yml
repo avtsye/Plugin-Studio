@@ -221,7 +221,7 @@ jobs:
           const h=fs.readFileSync("index.html","utf8");
           const shown=h.match(/Plugin Studio <small>([^<]+)<\/small>/)?.[1];
           if(shown!==m.version) throw new Error("Version mismatch: UI "+shown+" vs manifest "+m.version);
-          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
+          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js","stability-5-5.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
           NODE
 
       - name: UI contract preservation
@@ -283,7 +283,7 @@ jobs:
           for x in [".peekDefinition",".editorOutline",".editorQuickFix","var(--z-menu)","var(--z-float)","@media(max-width:760px)"]:
               if x not in css: raise SystemExit("Missing 5.2 presentation guard: "+x)
           if 'src="editor-experience-5-2.js"' not in html: raise SystemExit("5.2 runtime not loaded")
-          if not any(v in html for v in ["5.2.0","5.3.0","5.4.0"]): raise SystemExit("UI version older than 5.2.0")
+          if not any(v in html for v in ["5.2.0","5.3.0","5.4.0","5.5.0"]): raise SystemExit("UI version older than 5.2.0")
           print("OK: Plugin Studio 5.2 editor experience present")
           PY
 
@@ -397,6 +397,35 @@ jobs:
           for key in ["helpTitle","welcome","packageCenter","permissionAssistant","pluginGenerator","myProjects","recoveryCenter"]:
               if loc.count(key)<2: raise SystemExit("Missing bilingual locale key: "+key)
           print("OK: remaining legacy modules use one selected language")
+          PY
+
+      - name: Studio 5.5 stability regression
+        run: |
+          node --check stability-5-5.js
+          python3 - <<'PY'
+          from pathlib import Path
+          js=Path("stability-5-5.js").read_text(encoding="utf-8")
+          css=Path("styles.css").read_text(encoding="utf-8")
+          html=Path("index.html").read_text(encoding="utf-8")
+          manifest=Path("manifest.json").read_text(encoding="utf-8")
+          for x in ["modal","alertBox","confirmBox","promptBox","saveSession","restoreSession","plugin-studio-session-5-5"]:
+              if x not in js: raise SystemExit("Missing 5.5 stability feature: "+x)
+          for x in ["Plugin Studio 5.5","focus-visible","ps55Actions","max-height:min(88vh"]:
+              if x not in css: raise SystemExit("Missing 5.5 presentation guard: "+x)
+          if 'src="stability-5-5.js"' not in html or "5.5.0" not in html or '"version": "5.5.0"' not in manifest:
+              raise SystemExit("5.5 runtime/version mismatch")
+          print("OK: Studio 5.5 stability layer and version are consistent")
+          PY
+
+      - name: Legacy debt inventory
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          files=[p for p in Path(".").glob("*.js") if p.name not in {"stability-5-5.js"}]
+          native=sum(p.read_text(encoding="utf-8").count("alert(")+p.read_text(encoding="utf-8").count("confirm(")+p.read_text(encoding="utf-8").count("prompt(") for p in files)
+          print(f"INFO: native dialog call sites remaining: {native}")
+          if native>80: raise SystemExit("Native dialog debt unexpectedly increased")
+          print("OK: legacy dialog debt is bounded while migration continues")
           PY
 
       - name: Comprehensive Studio audit
