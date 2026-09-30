@@ -472,6 +472,24 @@ jobs:
           print("OK: Tabs, Quick Fix and first core dialog migration present")
           PY
 
+      - name: Studio 5.5 runtime smoke contract
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          h=Path("index.html").read_text(encoding="utf-8")
+          scripts=re.findall(r'<script[^>]+src="([^"]+)"',h)
+          required=["app.js","localization-5-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","stability-5-5.js"]
+          pos={x:scripts.index(x) if x in scripts else -1 for x in required}
+          if any(v<0 for v in pos.values()): raise SystemExit("Runtime module missing: "+str(pos))
+          if not(pos["app.js"]<pos["localization-5-4.js"]<pos["workspace-5-1.js"]<pos["editor-experience-5-2.js"]<pos["ide-intelligence-5-4.js"]<pos["studio-5-4.js"]<pos["stability-5-5.js"]):
+              raise SystemExit("Unsafe Studio runtime load order: "+str(pos))
+          app=Path("app.js").read_text(encoding="utf-8")
+          if 'async function goToLine' not in app or 'Studio55.prompt("עבור לשורה' not in app:
+              raise SystemExit("Go-to-line 5.5 migration missing")
+          print("OK: runtime module order and 5.5 core smoke contract")
+          PY
+
       - name: Comprehensive Studio audit
         run: node scripts/audit-studio.mjs
 
