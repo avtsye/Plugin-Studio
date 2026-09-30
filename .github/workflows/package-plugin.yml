@@ -491,6 +491,27 @@ jobs:
           print("OK: runtime module order and 5.5 core smoke contract")
           PY
 
+      - name: Default project real API contract
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, json
+          app=Path("app.js").read_text(encoding="utf-8")
+          spec=Path("sdk-spec.js").read_text(encoding="utf-8")
+          data=json.loads(spec.split("=",1)[1].rstrip(";\n"))
+          expected=["app.getInfo","app.getTheme","library.listRecentBooks","library.findBooks","reader.getCurrentState","reader.openBook","ui.showMessage"]
+          missing=[x for x in expected if x not in data["apiMethods"]]
+          if missing: raise SystemExit("Default project references non-SDK APIs: "+", ".join(missing))
+          absent=[x for x in expected if x not in app]
+          if absent: raise SystemExit("Default real API example missing: "+", ".join(absent))
+          perms=set(data.get("baselinePermissions",[]))|{"library.books.read","reader.open"}
+          for api in expected:
+              p=data.get("methodPermissions",{}).get(api)
+              if p and p not in perms: raise SystemExit("Default project lacks permission for "+api+": "+p)
+          if "API אמיתי" not in app: raise SystemExit("Default project must identify itself as real SDK example")
+          print("OK: default project APIs exist in SDK and required permissions are covered")
+          PY
+
       - name: Comprehensive Studio audit
         run: node scripts/audit-studio.mjs
 
