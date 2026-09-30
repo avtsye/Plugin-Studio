@@ -595,7 +595,7 @@ jobs:
           b=Path("one-click-build.js").read_text(encoding="utf-8")
           css=Path("styles.css").read_text(encoding="utf-8")
           html=Path("index.html").read_text(encoding="utf-8")
-          for x in ["contextGuide55","home55","fileHelp","data-help"]:
+          for x in ["contextGuide55","home55","fileHelp","dataset.help"]:
               if x not in h: raise SystemExit("Guidance feature missing: "+x)
           for x in ["buildCenter55","buildProgress","buildProblems","buildRelease"]:
               if x not in b: raise SystemExit("Build Center feature missing: "+x)
