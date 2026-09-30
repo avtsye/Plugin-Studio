@@ -142,5 +142,7 @@ window.PluginStudioAPI={
   renameProject(id,name){if(!db.projects[id]||!name?.trim())return false;db.projects[id].name=name.trim();if(id===db.active)st=db.projects[id];save();draw();return true},
   deleteProject(id){if(!db.projects[id]||Object.keys(db.projects).length<=1)return false;delete db.projects[id];if(db.active===id){db.active=Object.keys(db.projects)[0];st=db.projects[db.active];cur=st.files["manifest.json"]?"manifest.json":Object.keys(st.files)[0];open=[cur];file(cur)}save();return true},
   switchProject(id){if(!db.projects[id])return false;db.active=id;st=db.projects[id];cur=st.files["manifest.json"]?"manifest.json":Object.keys(st.files)[0];open=[cur];save();file(cur);return true},
-  importFiles(files,name){let k=Date.now().toString(36);db.projects[k]={name:name||"Imported Plugin",files};db.active=k;st=db.projects[k];cur=files["manifest.json"]?"manifest.json":Object.keys(files)[0];open=[cur];save();file(cur);check();return k}
+  importFiles(files,name){let k=Date.now().toString(36);db.projects[k]={name:name||"Imported Plugin",files};db.active=k;st=db.projects[k];cur=files["manifest.json"]?"manifest.json":Object.keys(files)[0];open=[cur];save();file(cur);check();return k},
+  createProject(name,id,files){if(!name?.trim()||!id?.trim())return false;let k=Date.now().toString(36);db.projects[k]={name:name.trim(),files:files||starter(name.trim(),id.trim())};db.active=k;st=db.projects[k];cur=st.files["manifest.json"]?"manifest.json":Object.keys(st.files)[0];open=[cur];save();file(cur);check();return k},
+  starterFiles(name,id){return starter(name,id)}
 };
