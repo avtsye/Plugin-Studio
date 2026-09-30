@@ -221,7 +221,7 @@ jobs:
           const h=fs.readFileSync("index.html","utf8");
           const shown=h.match(/Plugin Studio <small>([^<]+)<\/small>/)?.[1];
           if(shown!==m.version) throw new Error("Version mismatch: UI "+shown+" vs manifest "+m.version);
-          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js","stability-5-5.js","friendly-workspace-5-5.js","new-plugin-wizard-5-5.js","modern-ui-5-5.js","guidance-home-5-5.js","explorer-command-5-5.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
+          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js","stability-5-5.js","friendly-workspace-5-5.js","new-plugin-wizard-5-5.js","modern-ui-5-5.js","guidance-home-5-5.js","explorer-command-5-5.js","chrome-settings-5-5.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
           NODE
 
       - name: UI contract preservation
@@ -624,6 +624,35 @@ jobs:
           if 'src="explorer-command-5-5.js"' not in html:
               raise SystemExit("Explorer/Command runtime not loaded")
           print("OK: modern Explorer and unified Command Center are present")
+          PY
+
+      - name: UI compatibility and function preservation gate
+        run: |
+          node --check chrome-settings-5-5.js
+          node --check explorer-command-5-5.js
+          node --check workspace-5-1.js
+          python3 - <<'PY'
+          from pathlib import Path
+          html=Path("index.html").read_text(encoding="utf-8")
+          app=Path("app.js").read_text(encoding="utf-8")
+          workspace=Path("workspace-5-1.js").read_text(encoding="utf-8")
+          explorer=Path("explorer-command-5-5.js").read_text(encoding="utf-8")
+          chrome=Path("chrome-settings-5-5.js").read_text(encoding="utf-8")
+          critical=["projects","newProject","importPackage","preview","buildBtn","moreToolsBtn","modeBtn","helpBtn","add","renameFile","deleteFile","tabs","editor","studioSettingsBtn","quickOpen"]
+          for x in critical:
+              if 'id="'+x+'"' not in html: raise SystemExit("Critical UI contract removed: "+x)
+          for x in ["openFile","addFile","createProject","collectProblems","dialog"]:
+              if x not in app: raise SystemExit("Core API lost after UI work: "+x)
+          if '!window.ExplorerCommand55' not in workspace:
+              raise SystemExit("Legacy Ctrl+K handler is not safely delegated")
+          if 'stopImmediatePropagation();palette()' not in explorer:
+              raise SystemExit("Unified Ctrl+K command path missing")
+          order=["stability-5-5.js","friendly-workspace-5-5.js","new-plugin-wizard-5-5.js","modern-ui-5-5.js","guidance-home-5-5.js","explorer-command-5-5.js","chrome-settings-5-5.js"]
+          pos=[html.find('src="'+x+'"') for x in order]
+          if any(x<0 for x in pos) or pos!=sorted(pos): raise SystemExit("5.5 UI runtime order unsafe: "+str(dict(zip(order,pos))))
+          for x in ["sectionToggle55","tabClose55","openSettings","statusReady55"]:
+              if x not in chrome: raise SystemExit("Polished chrome feature missing: "+x)
+          print("OK: visual layers preserve critical functions and runtime contracts")
           PY
 
       - name: Comprehensive Studio audit
