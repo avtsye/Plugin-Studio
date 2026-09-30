@@ -30,5 +30,5 @@ function diagnostics(){const out=[],sp=spec(),baseline=new Set(sp.baselinePermis
  const mi=man?.contributes?.toolTab?.iconName;if(mi&&(!/_24_(regular|filled)$/.test(mi.replace(/^(?:otzaria:|fluent:)/,""))))out.push({level:"warning",file:"manifest.json",line:1,msg:msg("iconName צריך להסתיים ב-_24_regular או _24_filled","iconName must end with _24_regular or _24_filled")});
  return out}
 function status(){const x=current();if(!x)return;if(x.type==="api")$("#status").textContent=(sigs()[x.name]||x.name+"(args)")+" · "+(spec().methodPermissions?.[x.name]||"baseline")+" · ≥ "+(spec().methodMinVersions?.[x.name]||"?");else $("#status").textContent=x.name+" · "+(permissionForEvent(x.name)||"baseline / plugin-scoped")}
-function install(){const c=cm();if(!c)return setTimeout(install,100);c.addKeyMap({"Alt-Space":completion,"Ctrl-.":()=>{if(!quickFix())window.EditorAdvanced?.quickFix?.()},"F1":()=>{if(!describe())window.EditorAdvanced?.documentationPopup?.()}});c.on("cursorActivity",status)}
+function install(){const c=cm();if(!c)return setTimeout(install,100);c.addKeyMap({"Alt-Space":completion,"F1":()=>{if(!describe())window.EditorAdvanced?.documentationPopup?.()}});c.on("cursorActivity",status)}
 install();window.Intelligence4={context:ctx,completion,current,permissionForEvent,quickFix,describe,diagnostics,status,addPermission,setMin}})();
