@@ -279,3 +279,19 @@ html[dir="ltr"] .studioSections{padding-inline:238px 12px}
   .workspace51 header.topbar>.commandCenter{width:100%!important}
   .workspace51 .activityBar{padding-top:10rem}
 }
+
+
+/* Plugin Studio 5.5 — canonical stability and IDE polish layer */
+:root{--ps55-panel-min:10rem;--ps55-hit:2rem}
+.workspace51{min-width:0}.workspace51 main>*{min-width:0}.workspace51 button,.workspace51 input,.workspace51 select{max-width:100%}
+.workspace51 .ps55Actions{display:flex;justify-content:flex-end;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+.workspace51 .hasUnsavedWork #workspaceStatus::after{content:" •";color:var(--color-primary)}
+.workspace51 #tabs .tab{position:relative;max-width:15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.workspace51 #tabs .tab.pinned{padding-inline-start:1.25rem}.workspace51 #tabs .tab.pinned::before{content:"•";position:absolute;inset-inline-start:.5rem;color:var(--color-primary)}
+.workspace51 #problems{min-width:0}.workspace51 #problems .problem{overflow-wrap:anywhere}.workspace51 #console{overflow-wrap:anywhere}
+.workspace51 .splitView{min-width:0}.workspace51 .splitPane{min-width:var(--ps55-panel-min)}
+.workspace51 dialog{max-height:min(88vh,50rem)}.workspace51 #dlgBody{min-width:0;overflow:auto;max-height:72vh}
+.workspace51 :focus-visible{outline:.125rem solid var(--color-primary);outline-offset:.125rem}
+.workspace51 [dir="ltr"] .moreTools,.workspace51 html[dir="ltr"] .moreTools{text-align:left}
+@media(max-width:48rem){.workspace51 dialog{width:calc(100vw - 1rem);padding:1rem}.workspace51 #dlgBody{max-height:68vh}.workspace51 .ps55Actions>*{flex:1 1 8rem}}
+@media(max-width:30rem){.workspace51 .workspaceStatusMeta{display:none}.workspace51 #tabs .tab{max-width:10rem}}
