@@ -1,35 +1,5 @@
-(()=>{
-  const A=window.PluginStudioAPI,$=q=>document.querySelector(q);
-  if(!A)return;
-
-  function build(){
-    const d=window.Diagnostics3?.scan?.()||[];
-    const errors=d.filter(x=>x.level==="error");
-    const warnings=d.filter(x=>x.level==="warning");
-    const p=window.PackageCenter?.report?.()||{};
-    const blocked=errors.length>0||p.entrypointExists===false||p.network===true;
-    const blockers=[...errors.map(x=>x.message||x.msg||x.text||"Error"),...(!p.entrypointExists?["Entrypoint חסר"]:[]),...(p.network?["הפרויקט אינו Offline"]:[])];
-    const body='<div class="buildStatus '+(blocked?"bad":"good")+'">'+
-      '<b>'+(blocked?"יש דברים שצריך לתקן":"הפרויקט מוכן")+'</b>'+
-      '<span>'+errors.length+' שגיאות · '+warnings.length+' אזהרות</span></div>'+
-      '<div class="buildChecklist">'+
-        '<div><span>'+(p.entrypointExists?"✓":"×")+'</span><b>Entrypoint</b><small>'+(p.entrypointExists?"נמצא":"חסר")+'</small></div>'+
-        '<div><span>'+(!p.network?"✓":"×")+'</span><b>Offline</b><small>'+(!p.network?"תקין":"נמצאה יכולת רשת")+'</small></div>'+
-        '<div><span>'+(errors.length?"×":"✓")+'</span><b>Diagnostics</b><small>'+(errors.length?errors.length+" לתיקון":"עבר")+'</small></div>'+
-        '<div><span>✓</span><b>שמירה</b><small>הפרויקט נשמר מקומית</small></div>'+
-      '</div>'+
-      (blocked
-        ? '<div id="buildErrors">'+blockers.slice(0,8).map(x=>'<div class="problem error">'+A.escapeHtml(x)+'</div>').join("")+'</div><button id="buildFix">פתח Diagnostics</button>'
-        : '<div class="notice">הבדיקות עברו. אפשר לעבור ל־Release/Package.</div><button id="buildRelease" class="welcomePrimary">הכן Release</button> <button id="buildPackage">Package Center</button>');
-    A.dialog("Build",body);
-    if(blocked){
-      $("#buildFix").onclick=()=>{$("#dlg").close();$("#diagnosticsBtn").click()};
-    }else{
-      $("#buildRelease").onclick=()=>{$("#dlg").close();$("#releaseWizardBtn").click()};
-      $("#buildPackage").onclick=()=>{$("#dlg").close();$("#packageCenterBtn").click()};
-    }
-  }
-
-  $("#buildBtn").onclick=build;
-  window.OneClickBuild={build};
-})();
+(()=>{const A=window.PluginStudioAPI,$=q=>document.querySelector(q);if(!A)return;const he=()=>document.documentElement.lang!=="en",T=(a,b)=>he()?a:b;
+function build(){const d=window.Diagnostics3?.scan?.()||[],errors=d.filter(x=>x.level==="error"),warnings=d.filter(x=>x.level==="warning"),p=window.PackageCenter?.report?.()||{},checks=[{ok:p.entrypointExists!==false,title:T("קובץ כניסה","Entrypoint"),okText:T("נמצא ומוכן","Found and ready"),bad:T("חסר קובץ הכניסה שמוגדר ב־manifest","The manifest entrypoint is missing")},{ok:p.network!==true,title:T("עבודה מקומית","Offline"),okText:T("אין גישת רשת","No network access"),bad:T("נמצאה יכולת רשת בפרויקט","Network capability was found")},{ok:!errors.length,title:T("שגיאות","Errors"),okText:T("לא נמצאו שגיאות","No errors found"),bad:T(errors.length+" שגיאות דורשות תיקון",errors.length+" errors need fixing")},{ok:true,title:T("שמירה","Saved"),okText:T("השינויים נשמרים מקומית","Changes are stored locally"),bad:""}],blocked=checks.some(x=>!x.ok),blockers=[...errors.map(x=>x.message||x.msg||x.text||"Error"),...(!checks[0].ok?[checks[0].bad]:[]),...(!checks[1].ok?[checks[1].bad]:[])];
+const body=`<div class="buildCenter55"><header><span class="buildHero ${blocked?"bad":"good"}">${blocked?"!":"✓"}</span><div><h3>${blocked?T("יש כמה דברים לתקן","A few things need attention"):T("התוסף מוכן לשלב הבא","Your plugin is ready for the next step")}</h3><p>${blocked?T("עבור על השלבים המסומנים. לא צריך לחפש לבד.","Review the marked steps; you do not need to hunt for the problem."):T("כל הבדיקות החוסמות עברו בהצלחה.","All blocking checks passed successfully.")}</p></div></header><div class="buildProgress">${checks.map((x,i)=>`<div class="${x.ok?"done":"failed"}"><span>${x.ok?"✓":"!"}</span><p><b>${i+1}. ${x.title}</b><small>${x.ok?x.okText:x.bad}</small></p></div>`).join("")}</div><div class="buildSummary55"><b>${errors.length}</b> ${T("שגיאות","errors")} · <b>${warnings.length}</b> ${T("אזהרות","warnings")}</div>${blocked?`<div class="buildIssues55">${blockers.slice(0,6).map(x=>'<div>'+A.escapeHtml(x)+'</div>').join("")}</div><div class="ps55Actions"><button id="buildProblems">${T("פתח בעיות","Open Problems")}</button><button id="buildFix" class="primaryAction">${T("מצא ותיקון","Inspect & fix")}</button></div>`:`<div class="buildNext55"><b>${T("מה עכשיו?","What next?")}</b><span>${T("אפשר לבדוק בתצוגה או לעבור לאריזה והפצה.","Preview once more or continue to packaging and release.")}</span></div><div class="ps55Actions"><button id="buildPreview">${T("תצוגה","Preview")}</button><button id="buildPackage">${T("אריזה","Package")}</button><button id="buildRelease" class="primaryAction">${T("הכן Release","Prepare release")}</button></div>`}</div>`;A.dialog(T("בנייה ובדיקה","Build & check"),body);
+if(blocked){$("#buildProblems").onclick=()=>{$("#dlg").close();$("#problemsTab")?.click()};$("#buildFix").onclick=()=>{$("#dlg").close();$("#diagnosticsBtn")?.click()}}else{$("#buildPreview").onclick=()=>{$("#dlg").close();$("#preview")?.click()};$("#buildRelease").onclick=()=>{$("#dlg").close();$("#releaseWizardBtn")?.click()};$("#buildPackage").onclick=()=>{$("#dlg").close();$("#packageCenterBtn")?.click()}}}
+$("#buildBtn").onclick=build;window.OneClickBuild={build}})();
