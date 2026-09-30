@@ -504,7 +504,7 @@ jobs:
           if missing: raise SystemExit("Default project references non-SDK APIs: "+", ".join(missing))
           absent=[x for x in expected if x not in app]
           if absent: raise SystemExit("Default real API example missing: "+", ".join(absent))
-          perms=set(data.get("baselinePermissions",[]))|{"library.books.read","reader.open"}
+          perms=set(data.get("baselinePermissions",[]))|{"library.books.read","reader.open","reader.toolbar"}
           for api in expected:
               p=data.get("methodPermissions",{}).get(api)
               if p and p not in perms: raise SystemExit("Default project lacks permission for "+api+": "+p)
