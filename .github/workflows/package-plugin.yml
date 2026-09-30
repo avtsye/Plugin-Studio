@@ -221,7 +221,7 @@ jobs:
           const h=fs.readFileSync("index.html","utf8");
           const shown=h.match(/Plugin Studio <small>([^<]+)<\/small>/)?.[1];
           if(shown!==m.version) throw new Error("Version mismatch: UI "+shown+" vs manifest "+m.version);
-          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js","stability-5-5.js","friendly-workspace-5-5.js","new-plugin-wizard-5-5.js","modern-ui-5-5.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
+          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js","stability-5-5.js","friendly-workspace-5-5.js","new-plugin-wizard-5-5.js","modern-ui-5-5.js","guidance-home-5-5.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
           NODE
 
       - name: UI contract preservation
@@ -583,6 +583,27 @@ jobs:
           if 'src="modern-ui-5-5.js"' not in html:
               raise SystemExit("Modern UI runtime not loaded")
           print("OK: modern UI and 5.5 documentation are present")
+          PY
+
+      - name: Guided Home and Build Center regression
+        run: |
+          node --check guidance-home-5-5.js
+          node --check one-click-build.js
+          python3 - <<'PY'
+          from pathlib import Path
+          h=Path("guidance-home-5-5.js").read_text(encoding="utf-8")
+          b=Path("one-click-build.js").read_text(encoding="utf-8")
+          css=Path("styles.css").read_text(encoding="utf-8")
+          html=Path("index.html").read_text(encoding="utf-8")
+          for x in ["contextGuide55","home55","fileHelp","data-help"]:
+              if x not in h: raise SystemExit("Guidance feature missing: "+x)
+          for x in ["buildCenter55","buildProgress","buildProblems","buildRelease"]:
+              if x not in b: raise SystemExit("Build Center feature missing: "+x)
+          for x in [".home55",".contextGuide55",".buildCenter55",".buildProgress"]:
+              if x not in css: raise SystemExit("Guided UX styling missing: "+x)
+          if 'src="guidance-home-5-5.js"' not in html:
+              raise SystemExit("Guidance runtime not loaded")
+          print("OK: guided Home, contextual help and Build Center are present")
           PY
 
       - name: Comprehensive Studio audit
