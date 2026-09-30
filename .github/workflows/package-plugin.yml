@@ -424,7 +424,8 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           files=[p for p in Path(".").glob("*.js") if p.name not in {"stability-5-5.js"}]
-          import re\nnative=sum(len(re.findall(r"(?<![.\\w])(alert|confirm|prompt)\\s*\\(",p.read_text(encoding="utf-8"))) for p in files)
+          import re
+          native=sum(len(re.findall(r"(?<![.\\w])(alert|confirm|prompt)\\s*\\(",p.read_text(encoding="utf-8"))) for p in files)
           print(f"INFO: native dialog call sites remaining: {native}")
           if native>82: raise SystemExit("Native dialog debt unexpectedly increased beyond corrected 5.5 baseline")
           print("OK: legacy dialog debt is bounded while migration continues")
