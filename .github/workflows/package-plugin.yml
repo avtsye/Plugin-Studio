@@ -221,7 +221,7 @@ jobs:
           const h=fs.readFileSync("index.html","utf8");
           const shown=h.match(/Plugin Studio <small>([^<]+)<\/small>/)?.[1];
           if(shown!==m.version) throw new Error("Version mismatch: UI "+shown+" vs manifest "+m.version);
-          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js","stability-5-5.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
+          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js","stability-5-5.js","friendly-workspace-5-5.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
           NODE
 
       - name: UI contract preservation
@@ -524,6 +524,25 @@ jobs:
           if loc.count("noQuickFixes")<2:
               raise SystemExit("Quick Fix empty state is not bilingual")
           print("OK: Quick Fix lightbulb always responds visibly")
+          PY
+
+      - name: Friendly workspace 5.5 regression
+        run: |
+          node --check friendly-workspace-5-5.js
+          python3 - <<'PY'
+          from pathlib import Path
+          js=Path("friendly-workspace-5-5.js").read_text(encoding="utf-8")
+          css=Path("styles.css").read_text(encoding="utf-8")
+          html=Path("index.html").read_text(encoding="utf-8")
+          for x in ["friendlySimple","friendlyAdvanced","quickStart","activityHome","plugin-studio-friendly-mode-55"]:
+              if x not in js: raise SystemExit("Missing friendly workspace feature: "+x)
+          for x in [".friendlySimple",".friendlyCards",".friendlyHome"]:
+              if x not in css: raise SystemExit("Missing friendly workspace presentation: "+x)
+          if 'src="friendly-workspace-5-5.js"' not in html:
+              raise SystemExit("Friendly workspace runtime is not loaded")
+          if ".workspace51.hasUnsavedWork" not in css or 'html[dir="ltr"] .workspace51 .moreTools' not in css:
+              raise SystemExit("5.5 canonical selector fix missing")
+          print("OK: friendly simple/advanced workspace is present")
           PY
 
       - name: Comprehensive Studio audit
