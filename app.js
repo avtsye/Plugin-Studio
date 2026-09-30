@@ -145,5 +145,7 @@ window.PluginStudioAPI={
   importFiles(files,name){let k=Date.now().toString(36);db.projects[k]={name:name||"Imported Plugin",files};db.active=k;st=db.projects[k];cur=files["manifest.json"]?"manifest.json":Object.keys(files)[0];open=[cur];save();file(cur);check();return k},
   createProject(name,id,files){if(!name?.trim()||!id?.trim())return false;let k=Date.now().toString(36);db.projects[k]={name:name.trim(),files:files||starter(name.trim(),id.trim())};db.active=k;st=db.projects[k];cur=st.files["manifest.json"]?"manifest.json":Object.keys(st.files)[0];open=[cur];save();file(cur);check();return k},
   starterFiles(name,id){return starter(name,id)},
-  addFile(name,content=""){if(!name||Object.hasOwn(st.files,name))return false;st.files[name]=content;open.push(name);file(name);save();return true}
+  addFile(name,content=""){if(!name||Object.hasOwn(st.files,name))return false;st.files[name]=content;open.push(name);file(name);save();return true},
+  closeFile(name){if(!name||!open.includes(name))return false;if(open.length<=1)return false;const wasCurrent=cur===name,idx=open.indexOf(name);open=open.filter(x=>x!==name);if(wasCurrent){const next=open[Math.min(idx,open.length-1)]||open[0];file(next)}else draw();return true},
+  get openFiles(){return [...open]}
 };
