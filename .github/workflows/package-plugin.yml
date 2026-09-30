@@ -221,7 +221,7 @@ jobs:
           const h=fs.readFileSync("index.html","utf8");
           const shown=h.match(/Plugin Studio <small>([^<]+)<\/small>/)?.[1];
           if(shown!==m.version) throw new Error("Version mismatch: UI "+shown+" vs manifest "+m.version);
-          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js","stability-5-5.js","friendly-workspace-5-5.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
+          for(const f of ["intelligence-4-2.js","symbol-integration-4.js","workspace-5-1.js","editor-experience-5-2.js","ide-intelligence-5-4.js","studio-5-4.js","localization-5-4.js","stability-5-5.js","friendly-workspace-5-5.js","new-plugin-wizard-5-5.js"]) if(!h.includes('src="'+f+'"')) throw new Error("Missing runtime module "+f);
           NODE
 
       - name: UI contract preservation
@@ -543,6 +543,26 @@ jobs:
           if ".workspace51.hasUnsavedWork" not in css or 'html[dir="ltr"] .workspace51 .moreTools' not in css:
               raise SystemExit("5.5 canonical selector fix missing")
           print("OK: friendly simple/advanced workspace is present")
+          PY
+
+      - name: New plugin wizard 5.5 regression
+        run: |
+          node --check new-plugin-wizard-5-5.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          w=Path("new-plugin-wizard-5-5.js").read_text(encoding="utf-8")
+          h=Path("index.html").read_text(encoding="utf-8")
+          spec=json.loads(Path("sdk-spec.js").read_text(encoding="utf-8").split("=",1)[1].rstrip(";\n"))
+          for kind in ['starter','toolbar','context','library','storage','blank']:
+              if 'id:"'+kind+'"' not in w: raise SystemExit("Wizard kind missing: "+kind)
+          apis=["reader.addToolbarItem","reader.removeToolbarItem","reader.addContextMenuItem","reader.removeContextMenuItem","library.findBooks","reader.openBook","storage.get","storage.set"]
+          for api in apis:
+              if api not in w: raise SystemExit("Wizard real API example missing: "+api)
+              if api not in spec["apiMethods"]: raise SystemExit("Wizard uses non-SDK API: "+api)
+          if 'src="new-plugin-wizard-5-5.js"' not in h: raise SystemExit("New-plugin wizard runtime not loaded")
+          if "createProject" not in Path("app.js").read_text(encoding="utf-8"): raise SystemExit("Safe project creation API missing")
+          print("OK: goal-based wizard uses real SDK APIs")
           PY
 
       - name: Comprehensive Studio audit
